@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/*@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');*/
+
+/* Standard CSS rules remain */
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.logo {
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+}
+
+.logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+/* Keyframes should be top-level rules */
+@keyframes logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    a:nth-of-type(2) .logo {
+        animation: logo-spin infinite 20s linear;
+    }
+}
+
+.card {
+    padding: 2em;
+}
+
+.read-the-docs {
+    color: #888;
+}
+
+/* Define base variables and colors in @layer base */
+@layer base {
+    :root {
+        /* Existing shadcn/ui-like variables */
+        --background: 0 0% 100%;
+        --foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+        --primary: 142 75% 27%; /* This seems like a green-ish primary */
+        --primary-foreground: 210 40% 98%;
+        --secondary: 122 39% 49%; /* This also seems green */
+        --secondary-foreground: 222.2 47.4% 11.2%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 142 41% 90%; /* Light green */
+        --accent-foreground: 222.2 47.4% 11.2%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 142 75% 27%; /* Green ring */
+
+        --radius: 0.75rem;
+
+        /* Sidebar variables (also standard) */
+        --sidebar-background: 0 0% 98%;
+        --sidebar-foreground: 240 5.3% 26.1%;
+        --sidebar-primary: 240 5.9% 10%;
+        --sidebar-primary-foreground: 0 0% 98%;
+        --sidebar-accent: 240 4.8% 95.9%;
+        --sidebar-accent-foreground: 240 5.9% 10%;
+        --sidebar-border: 220 13% 91%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+
+    }
+
+    @theme {
+      
+        /* Learn9ja custom colors moved from @theme */
+        --color-learn9ja: #0A8034;
+        --color-learn9ja-light: #4CAF50;
+        --color-learn9ja-pale: #E8F5E9;
+        --color-learn9ja-white: #FFFFFF;
+        --color-learn9ja-gray: #F5F7FA;
+        --color-learn9ja-dark: #333333;
+
+        --background-bg-background: text-foreground font-sans antialiased;
+
+        /* Animation variables - keep them here or in a dedicated section */
+        --animate-accordion-down: accordion-down 0.2s ease-out;
+        --animate-accordion-up: accordion-up 0.2s ease-out;
+        --animate-fade-in: fade-in 0.5s ease-out;
+        --animate-slide-up: slide-up 0.5s ease-out;
+
+        @keyframes accordion-down {
+          from {
+              height: '0';
+          }
+          to {
+              height: var(--radix-accordion-content-height); /* Use var() directly if it's a CSS variable */
+          }
+      }
+      
+      @keyframes accordion-up {
+          from {
+              height: var(--radix-accordion-content-height);
+          }
+          to {
+              height: '0';
+          }
+      }
+      
+      @keyframes fade-in {
+          0% {
+              opacity: 0; /* Use numbers directly for opacity */
+          }
+          100% {
+              opacity: 1; /* Use numbers directly for opacity */
+          }
+      }
+      
+      @keyframes slide-up {
+          0% {
+              transform: translateY(10px);
+              opacity: 0;
+          }
+          100% {
+              transform: translateY(0);
+              opacity: 1;
+          }
+      }
+    }
+
+    .dark {
+        /* Existing shadcn/ui-like dark variables */
+        --background: 222.2 84% 4.9%;
+        --foreground: 210 40% 98%;
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+        --primary: 142 75% 27%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+        --secondary: 122 39% 49%;
+        --secondary-foreground: 210 40% 98%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217.2 32.6% 17.5%; /* Changed from oklch(1 0 0 / 10%); - assuming HSL format needed here */
+        --input: 217.2 32.6% 17.5%; /* Changed from oklch(1 0 0 / 15%); - assuming HSL format needed here */
+        --ring: 142 75% 27%;
+        /* Chart colors - Assuming these were intended for dark mode based on placement */
+        --chart-1: 0.488 0.243 264.376; /* Keep oklch components */
+        --chart-2: 0.696 0.17 162.48;
+        --chart-3: 0.769 0.188 70.08;
+        --chart-4: 0.627 0.265 303.9;
+        --chart-5: 0.645 0.246 16.439;
+
+         /* Sidebar variables (also standard) */
+        --sidebar-background: 205 28% 15%; /* Example dark sidebar background */
+        --sidebar-foreground: 210 40% 98%;
+        --sidebar-primary: 142 75% 27%;
+        --sidebar-primary-foreground: 210 40% 98%;
+        --sidebar-accent: 217.2 32.6% 17.5%;
+        --sidebar-accent-foreground: 210 40% 98%;
+        --sidebar-border: 217.2 32.6% 17.5%;
+        --sidebar-ring: 142 75% 27%;
+    }
+
+}
+
+
+  .hero-gradient {
+      background: linear-gradient(
+          135deg,
+          rgba(10, 128, 67, 0.1) 0%,
+          rgba(255, 255, 255, 0.7) 100%
+      );
+  }
+
+    .card-hover {
+        @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    }
+
+    .btn-primary {
+        /* Assuming 'learn9ja' color is configured in tailwind.config.js pointing to var(--color-learn9ja) */
+        @apply bg-learn9ja text-white hover:bg-learn9ja/90 font-medium rounded-lg px-5 py-2.5 transition-all duration-300 flex items-center justify-center;
+    }
+
+    .btn-secondary {
+         /* Assuming 'learn9ja' color is configured */
+        @apply bg-white text-learn9ja border border-learn9ja hover:bg-learn9ja/10 font-medium rounded-lg px-5 py-2.5 transition-all duration-300 flex items-center justify-center;
+    }
+

@@ -1,0 +1,182 @@
+
+
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+        
+
+// --- ENUMS ---
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER 
+}
+
+enum Role { 
+  STUDENT 
+  TEACHER 
+}
+
+enum BookingStatus { 
+  PENDING 
+  ACCEPTED 
+  DECLINED 
+  COMPLETED 
+  CANCELLED 
+  RESCHEDULE_REQUESTED 
+}
+
+enum TeacherStatus { 
+  PENDING 
+  APPROVED 
+  REJECTED 
+  SUSPENDED
+}
+
+// <<< Subscription Tier Enum >>>
+enum SubscriptionTier {
+  BASIC     // Default free tier?
+  PREMIUM   // Paid tier 1
+  ENTERPRISE // Paid tier 2 / Business tier?
+  // Add more tiers as needed
+}
+
+
+// --- MODELS ---
+
+model User {
+  id            String    @id @default(uuid())
+  email         String?   @unique
+  name          String?
+  role          Role?
+  avatarUrl     String?   @map("avatar_url")
+  gender        Gender?
+  dob           DateTime? @db.Date
+  phone         String?   @unique
+  address       Json?
+  paymentMethodDetails Json? @map("payment_method_details")
+  languages     String[]  @default([])
+  location      String?
+  subscriptionTier SubscriptionTier @default(BASIC)
+  timezone      String?   // <<< NEW: User's IANA timezone name (e.g., "Africa/Lagos")
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  teacherProfile  TeacherProfile?
+  studentBookings Booking[]       @relation("StudentBookings")
+  teacherBookings Booking[]       @relation("TeacherBookings")
+  reviewsGiven    Review[]        @relation("ReviewsByUsers")
+  reviewsReceived Review[]        @relation("ReviewsForUsers")
+  notifications   Notification[]
+
+  @@map("users")
+}
+
+model TeacherProfile {
+  userId         String        @id @map("user_id")
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status         TeacherStatus @default(PENDING)
+  bio            String?
+  availability   Json?
+  averageRating  Float?        @map("average_rating")
+  pricePerHour   Decimal?      @map("price_per_hour") @db.Decimal(10, 2)
+  payoutDetails  Json?         @map("payout_details")
+  specializations String[]     @default([])
+  acceptingInstantSessions Boolean @default(false) // <<< NEW: Teacher's toggle for instant availability
+
+
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  subjectsTaught TeacherSubject[]
+  @@map("teacher_profiles")
+}
+
+model Subject {
+  id    String @id @default(cuid())
+  name  String @unique
+  teachers TeacherSubject[] @relation("TeacherSubject")
+  bookings Booking[]
+  @@map("subjects")
+}
+
+model TeacherSubject {
+  id            String @id @default(cuid())
+  teacherUserId String @map("teacher_user_id")
+  subjectId     String @map("subject_id")
+  // Use String array for specific levels teacher teaches for this subject
+  levels        String[]
+
+  teacher TeacherProfile @relation(fields: [teacherUserId], references: [userId], onDelete: Cascade)
+  subject Subject        @relation("TeacherSubject", fields: [subjectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([teacherUserId, subjectId])
+  @@index([subjectId])
+  @@map("teacher_subjects")
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  studentUserId   String        @map("student_user_id")
+  teacherUserId   String        @map("teacher_user_id")
+  subjectId       String        @map("subject_id")
+  level           String       
+  requestedTime   DateTime      @map("requested_time")
+  endTimeUtc      DateTime?     @map("end_time_utc")
+  durationMinutes Int           @default(60) @map("duration_minutes")
+  status          BookingStatus @default(PENDING)
+  calculatedPrice Decimal?      @map("calculated_price") @db.Decimal(10, 2)
+  videoRoomId     String?       @map("video_room_id")
+  videoRoomUrl    String?       @map("video_room_url")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  student User    @relation("StudentBookings", fields: [studentUserId], references: [id], onDelete: Cascade)
+  teacher User    @relation("TeacherBookings", fields: [teacherUserId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+  review Review?
+
+  @@index([studentUserId, requestedTime])
+  @@index([teacherUserId, requestedTime])
+  @@map("bookings")
+}
+
+model Review {
+  id              String  @id @default(cuid())
+  bookingId       String  @unique @map("booking_id")
+  reviewerUserId  String  @map("reviewer_user_id")
+  revieweeUserId  String  @map("reviewee_user_id")
+  rating          Int
+  comment         String?
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  booking         Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  reviewer        User    @relation("ReviewsByUsers", fields: [reviewerUserId], references: [id], onDelete: Cascade)
+  reviewee        User    @relation("ReviewsForUsers", fields: [revieweeUserId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
+model Notification {
+  id      String  @id @default(cuid())
+  userId  String  @map("user_id")
+  message String
+  link    String?
+  isRead  Boolean @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}

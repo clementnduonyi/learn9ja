@@ -29,7 +29,7 @@
                 orderBy: { createdAt: 'desc' }, // Show newest first
                 take: 50, // Limit number of notifications initially displayed
             });
-        } catch (error: any) {
+        } catch (error) {
             console.error("Error fetching notifications:", error);
             fetchError = "Could not load notifications.";
         }

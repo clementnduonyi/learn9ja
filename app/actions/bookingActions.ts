@@ -3,10 +3,10 @@
 import {  BookingStatus, Prisma } from '@prisma/client';
 import { createClient } from '@/lib/supabase/server';
 import prisma from '@/lib/prisma';
-import { z, ZodError } from 'zod';
+import { z } from 'zod';
 import { Paystack } from 'paystack-sdk';
-import { sendBookingRequestEmail } from '@/lib/emails/bookingRequest';
-import { BookingWithSubjectName, BookingRequestData, ActionResult } from '@/lib/types';
+// import { sendBookingRequestEmail } from '@/lib/emails/bookingRequest';
+import { ActionResult } from '@/lib/types';
 import { revalidatePath } from 'next/cache'; // To refresh data on related pages
 
 
@@ -77,10 +77,18 @@ export async function initiatePayment(requestData: InitiatePaymentData): Promise
     }
 
     return { success: true, authorization_url: transaction.data.authorization_url };
-  } catch (error: any) {
+
+  } catch (error: unknown) {
     console.error("Error in initiatePayment:", error);
-    return { success: false, error: error.message || "An unexpected error occurred while starting payment." };
+     // Check if the error is an instance of Error to safely access its message property
+    if (error instanceof Error) {
+        return { success: false, error: error.message || 'Failed.' };
+    }
+
+    // Fallback for non-Error types
+    return { success: false, error: 'An unknown error occurred while initiating your payment.' };
   }
+  
 }
 
 
@@ -179,9 +187,15 @@ export async function verifyPaymentAndCreateBooking(
 
     return { success: true, bookingId: newBooking.id };
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in verifyPaymentAndCreateBooking:", error);
-    return { success: false, error: error.message || "An unexpected error occurred during booking creation." };
+    // Check if the error is an instance of Error to safely access its message property
+    if (error instanceof Error) {
+        return { success: false, error: error.message || 'Failed to verify payament.' };
+    }
+
+    // Fallback for non-Error types
+    return { success: false, error: 'An unknown error occurred while verifying your payment. Try again!' };
   }
 }
 
@@ -276,9 +290,15 @@ export async function completeBooking(bookingId: string): Promise<ActionResult> 
 
         return { success: true };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error(`Error marking booking ${bookingId} complete:`, error);
-        return { success: false, error: error.message || 'Failed to mark booking as complete.' };
+        // Check if the error is an instance of Error to safely access its message property
+        if (error instanceof Error) {
+            return { success: false, error: error.message || 'Failed to mark session complete. Try again!' };
+        }
+
+        // Fallback for non-Error types
+        return { success: false, error: 'An unknown error occurred while saving the user profile.' };
     }
 }
 
@@ -347,9 +367,15 @@ export async function requestReschedule(
 
         return { success: true };
 
-    } catch (error: any) {
-        console.error(`Error requesting reschedule for booking ${bookingId}:`, error);
-        return { success: false, error: error.message || 'Failed to request reschedule.' };
+    } catch (error: unknown) {
+      console.error(`Error requesting reschedule for booking ${bookingId}:`, error);
+      // Check if the error is an instance of Error to safely access its message property
+      if (error instanceof Error) {
+          return { success: false, error: error.message || 'Failed to reschedule session.' };
+      }
+
+      // Fallback for non-Error types
+      return { success: false, error: 'An unknown error occurred while rescheduling your session. Try agaian later!' };
     }
 }
 
@@ -431,8 +457,14 @@ export async function cancelBooking(bookingId: string): Promise<ActionResult> {
 
         return { success: true };
 
-    } catch (error: any) {
-        console.error(`Error cancelling booking ${bookingId}:`, error);
-        return { success: false, error: error.message || 'Failed to cancel booking.' };
+    } catch (error: unknown) {
+      console.error(`Error cancelling booking ${bookingId}:`, error);
+      // Check if the error is an instance of Error to safely access its message property
+      if (error instanceof Error) {
+          return { success: false, error: error.message || 'Failed to cancel booking. Try again!' };
+      }
+
+      // Fallback for non-Error types
+      return { success: false, error: 'An unknown error occurred while cancelling your booking. Try again later!' };
     }
 }

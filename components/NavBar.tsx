@@ -6,7 +6,6 @@ import prisma from '@/lib/prisma'; // Need prisma to get profile/count
 import LogoutButton from '@/components/LogoutButton';
 import { Button } from '@/components/ui/button';
 import { Bell } from 'lucide-react'; // Import icon
-import type { Gender } from '@prisma/client'; // Import type
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils"; // Assuming you have utils for className merging
 import { getDisplayAvatar } from '@/lib/helpers'

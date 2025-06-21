@@ -35,7 +35,7 @@ export default async function SettingsPage() {
             // This implies a data inconsistency if the user is authenticated
             throw new Error("User profile not found in database.");
         }
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error fetching user settings:", error);
         fetchError = "Could not load your settings data.";
     }

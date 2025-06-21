@@ -24,7 +24,7 @@ interface ReviewCardProps {
 }
 
 // Helper (can be moved to utils)
-const getDisplayAvatar = (avatarUrl: string | null | undefined, gender: any): string => {
+const getDisplayAvatar = (avatarUrl: string | null | undefined, gender: unknown): string => {
     if (avatarUrl) return avatarUrl;
     switch (gender) { case 'MALE': return '/avatars/default-male.svg'; /* ... */ default: return '/avatars/default-other.svg'; }
 }

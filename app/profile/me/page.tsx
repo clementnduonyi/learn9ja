@@ -29,27 +29,7 @@ const userProfileArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
         }
     }
 });
-/*const userProfileArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
-    select: {
-        id: true, name: true, email: true, role: true, avatarUrl: true, gender: true, dob: true, phone: true, createdAt: true, address: true, // Include address if displaying
-        // Use include for nested relations
-        teacherProfile: {
-            include: { // Include the full TeacherProfile object
-                subjectsTaught: { // Include subjects taught
-                    orderBy: { subject: { name: 'asc' } }, // Order subjects alphabetically
-                    include: { // Include the subject name itself
-                        subject: { select: { name: true } }
-                    },
-                    // Select fields needed from TeacherSubject
-                    // 'levels' is automatically included because we use 'include' on teacherProfile
-                    // If using 'select' on teacherProfile, you'd need 'select: { levels: true }' here
-                }
-            },
-            // Select other TeacherProfile fields directly if needed
-            select: { status: true, bio: true, averageRating: true, pricePerHour: true, specializations: true,}
-        }
-    }
-});*/
+
 // Define the exact type based on the validator
 type UserWithProfile = Prisma.UserGetPayload<typeof userProfileArgs>;
 
@@ -89,7 +69,7 @@ export default async function ProfilePage() {
             ...userProfileArgs // Use the defined select/include args
         });
         if (!userProfile) throw new Error("User profile not found.");
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error fetching user profile:", error);
         fetchError = "Could not load user profile.";
     }

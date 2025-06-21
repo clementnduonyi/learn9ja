@@ -103,10 +103,23 @@ export default function TeacherBookingDetailClient({ booking }: TeacherBookingDe
 
     // TODO: Add handler for responding to reschedule request (needs defined logic/actions)
 
+    
+
 
     const studentName = booking.student?.name || booking.student?.email || 'Student';
-    const getStatusClass = (status: BookingStatus) => { /* ... same as before ... */ }; // Add helper back
-
+      
+    const getStatusClass = (status: BookingStatus) => {
+        switch (status) {
+            case BookingStatus.PENDING: return 'text-yellow-600 bg-yellow-100';
+            case BookingStatus.ACCEPTED: return 'text-indigo-600 bg-indigo-100';
+            case BookingStatus.COMPLETED: return 'text-green-600 bg-green-100';
+            case BookingStatus.DECLINED: return 'text-red-600 bg-red-100';
+            case BookingStatus.CANCELLED: return 'text-gray-600 bg-gray-100';
+            case BookingStatus.RESCHEDULE_REQUESTED: return 'text-blue-600 bg-blue-100';
+            default: return 'text-gray-500 bg-gray-100';
+        }
+    };
+    
     return (
         <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 md:p-8 space-y-4">
             {/* Display Details */}
@@ -137,8 +150,8 @@ export default function TeacherBookingDetailClient({ booking }: TeacherBookingDe
                      <>
                         <p className="text-sm italic text-blue-700 p-2 w-full">Student requested to reschedule. Please contact them directly to arrange a new time.</p>
                         {/* TODO: Add buttons to Acknowledge (set back to ACCEPTED?) or Cancel? */}
-                        <Button variant="outline" size="sm" onClick={handleCancel} disabled={isActionPending}>Cancel Booking</Button>
-                        {/* <Button variant="secondary" size="sm" onClick={handleAcknowledgeReschedule} disabled={isActionPending}>Acknowledge</Button> */}
+                       {/* <Button variant="outline" size="sm" onClick={handleCancel} disabled={isActionPending}>Cancel Booking</Button>
+                        {<Button variant="secondary" size="sm" onClick={handleAcknowledgeReschedule} disabled={isActionPending}>Acknowledge</Button>}*/}
                     </>
                 )}
                  {currentStatus === BookingStatus.COMPLETED && (
@@ -153,6 +166,5 @@ export default function TeacherBookingDetailClient({ booking }: TeacherBookingDe
     );
 }
 
-// Remember to define/import getStatusClass helper if needed
-const getStatusClass = (status: BookingStatus) => { /* ... */ };
+
 

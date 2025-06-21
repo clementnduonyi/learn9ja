@@ -85,7 +85,18 @@ export default function StudentBookingDetailClient({ booking }: StudentBookingDe
     };
 
     const teacherName = booking.teacher?.name ?? 'Teacher';
-    const getStatusClass = (status: BookingStatus) => { /* ... same as card ... */ }; // Add this helper back
+    
+    const getStatusClass = (status: BookingStatus) => {
+        switch (status) {
+            case BookingStatus.PENDING: return 'text-yellow-600 bg-yellow-100';
+            case BookingStatus.ACCEPTED: return 'text-indigo-600 bg-indigo-100';
+            case BookingStatus.COMPLETED: return 'text-green-600 bg-green-100';
+            case BookingStatus.DECLINED: return 'text-red-600 bg-red-100';
+            case BookingStatus.CANCELLED: return 'text-gray-600 bg-gray-100';
+            case BookingStatus.RESCHEDULE_REQUESTED: return 'text-blue-600 bg-blue-100';
+            default: return 'text-gray-500 bg-gray-100';
+        }
+    };
 
     return (
         <>
@@ -142,15 +153,4 @@ export default function StudentBookingDetailClient({ booking }: StudentBookingDe
     );
 }
 
-// Remember to define/import getStatusClass helper if needed
-const getStatusClass = (status: BookingStatus) => {
-    switch (status) {
-        case BookingStatus.PENDING: return 'text-yellow-600 bg-yellow-100';
-        case BookingStatus.ACCEPTED: return 'text-indigo-600 bg-indigo-100';
-        case BookingStatus.COMPLETED: return 'text-green-600 bg-green-100';
-        case BookingStatus.DECLINED: return 'text-red-600 bg-red-100';
-        case BookingStatus.CANCELLED: return 'text-gray-600 bg-gray-100';
-        case BookingStatus.RESCHEDULE_REQUESTED: return 'text-blue-600 bg-blue-100';
-        default: return 'text-gray-500 bg-gray-100';
-    }
-};
+

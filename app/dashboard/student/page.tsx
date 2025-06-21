@@ -62,7 +62,7 @@ export default async function StudentDashboardPage() {
                 endTimeUtc: 'desc',
             },
         });
-    } catch (error: any) {
+    } catch (error) {
         console.error("Failed to fetch student bookings:", error);
         fetchError = "Could not load your bookings. Please try again later.";
     }

@@ -112,13 +112,18 @@ export async function updateTeacherProfile(data: TeacherProfileUpdateData): Prom
         revalidatePath('/dashboard/teacher');
         return { success: true };
 
-    } catch (error: any) {
-         if (error instanceof ZodError) {
+    } catch (error: unknown) {
+        if (error instanceof ZodError) {
             console.error("Teacher profile update validation failed:", error.errors);
             return { success: false, error: `Invalid input: ${error.errors[0]?.message}` };
         }
-        console.error(`Error updating teacher profile for ${userId}:`, error);
-        return { success: false, error: error.message || 'Failed to update profile.' };
+        if (error instanceof Error) {
+          return { success: false, error: error.message || 'Failed to update profile.' };
+        }
+
+        // Fallback for non-Error types
+        return { success: false, error: 'An unknown error occurred while updating your profile. Try again!' };
+          
     }
 }
 
@@ -133,19 +138,24 @@ export async function updateTeacherPayoutSettings(inputData: PayoutSettingsInput
     const profile = await prisma.teacherProfile.findUnique({ where: { userId: user.id }, select: { status: true } });
     if (!profile) return { success: false, error: 'Teacher profile not found.' };
     if (profile.status !== TeacherStatus.APPROVED) return { success: false, error: 'Payout setup requires approved teacher status.' };
-    console.warn("updateTeacherPayoutSettings action called - Stripe Connect logic needed.");
+    console.warn("updateTeacherPayoutSettings action called - Stripe Connect logic needed.", inputData);
     try {
          const stripeOnboardingUrl = `https://connect.stripe.com/setup/c/acct_placeholder_${user.id}`;
+
          await prisma.teacherProfile.update({ where: { userId: user.id }, data: { payoutDetails: { stripeAccountId: `acct_placeholder_${user.id}`, status: 'onboarding_started' } } });
          revalidatePath('/profile/teacher/edit');
          return { success: true, url: stripeOnboardingUrl };
-    } catch (error: any) {
-         console.error(`Error updating payout settings for ${user.id}:`, error);
-         return { success: false, error: error.message || 'Failed to update payout settings.' };
+    } catch (error: unknown) {
+        console.error(`Error updating payout settings for ${user.id}:`, error);
+
+        if (error instanceof Error) {
+          return { success: false, error: error.message || 'Failed to update payout details.' };
+        }
+
+      // Fallback for non-Error types
+      return { success: false, error: 'An unknown error occurred while updating your payout information. Try again!' };
     }
 }
-
-
 
 
 /**
@@ -194,6 +204,7 @@ export async function getFeaturedTeachers(): Promise<TeacherForCard[]> {
 
   } catch (error) {
     console.error("Failed to fetch featured teachers:", error);
+    
     return []; // Return empty array on error to prevent page crashes
   }
 }
@@ -226,8 +237,14 @@ export async function getTeacherSubjects(teacherUserId: string) {
         levels: item.levels
       }))
     };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error fetching teacher subjects:", error);
-    return { success: false, error: "Could not load teacher's subjects." };
+    if (error instanceof Error) {
+          return { success: false, error: error.message || "Could not load teacher's subjects." };
+        }
+
+      // Fallback for non-Error types
+      return { success: false, error: "An unknown error occurred while loading teacher's subject. Try again!" };
+
   }
 }

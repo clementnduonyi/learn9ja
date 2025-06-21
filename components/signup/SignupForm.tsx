@@ -18,7 +18,7 @@ import { Gender, Role } from '@prisma/client'; // <<< Import Gender enum
 export default function SignUpForm() {
   const router = useRouter();
   const supabase = createClient();
-  const [step, setStep] = useState<"role" | "details">("role");
+ // const [step, setStep] = useState<"role" | "details">("role");
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -72,7 +72,7 @@ export default function SignUpForm() {
 
     // Redirect to login or a specific "check email" page
     router.push('/login?message=Please check your email to confirm your account.');
-
+   console.log(signUpData);
   };
 
   return (

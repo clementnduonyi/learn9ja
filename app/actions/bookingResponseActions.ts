@@ -101,7 +101,7 @@ export async function respondToBookingRequest(
 
             // Return value from transaction isn't strictly needed outside anymore
             // if we fetch required data again, but returning it is fine.
-            // return createdOrUpdatedBooking; // No longer need to return from tx
+            return createdOrUpdatedBooking; // No longer need to return from tx
 
         }); // End Transaction
 
@@ -158,9 +158,15 @@ export async function respondToBookingRequest(
 
         return { success: true };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error(`Error responding to booking ${bookingId}:`, error);
-        return { success: false, error: error.message || "Failed to respond to booking request." };
+         // Check if the error is an instance of Error to safely access its message property
+        if (error instanceof Error) {
+            return { success: false, error: error.message || 'Failed to respond to booking request.' };
+        }
+
+        // Fallback for non-Error types
+        return { success: false, error: 'An unknown error occurred while saving the user profile.' };
     }
 }
 

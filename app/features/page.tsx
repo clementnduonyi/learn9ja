@@ -1,9 +1,8 @@
 // app/features/page.tsx
 import Header from "@/ui/home/Header";
-import Footer from "@/ui/Footer";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, /*CardDescription,*/ CardContent } from "@/components/ui/card";
 import Image from "next/image"; // Using Next.js Image component for visuals
-import { Video, MessageSquare, CalendarDays, User, CreditCard, History, Bell, LayoutDashboard, LifeBuoy, ShieldCheck } from "lucide-react"; // Example icons
+import { Video, MessageSquare, CalendarDays, User, CreditCard, History, Bell, LayoutDashboard, LifeBuoy, /*ShieldCheck*/ } from "lucide-react"; // Example icons
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"; 
 
 // Reuse the IconPlaceholder pattern
@@ -23,7 +22,7 @@ export default function FeaturesPage() {
         <div className="mx-auto text-lg text-gray-700 dark:text-gray-300 space-y-16"> {/* Increased space between sections */}
 
           <p className="text-center md:text-left max-w-4xl mx-auto">
-            Demirite is packed with features designed to provide a seamless, engaging, and productive experience for both students and teachers in live online environments.
+            Learn9ja is packed with features designed to provide a seamless, engaging, and productive experience for both students and teachers in live online environments.
           </p>
 
           {/* ======================================= */}
@@ -137,7 +136,7 @@ export default function FeaturesPage() {
                 </CardHeader>
                 <CardContent className="p-0 text-sm text-gray-600 dark:text-gray-400 text-left space-y-2">
                   <p>
-                    Learn more about who you're connecting with. Teacher profiles include qualifications, subject lists, availability, student reviews, and introduction videos. Student profiles help teachers understand learning needs.
+                    Learn more about who you&apos;re connecting with. Teacher profiles include qualifications, subject lists, availability, student reviews, and introduction videos. Student profiles help teachers understand learning needs.
                   </p>
                    {/* Optional small visual */}
                    <div className="mt-4">

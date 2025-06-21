@@ -1,7 +1,5 @@
 "use client"
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Role } from "@prisma/client";
 import React, { useState } from 'react';
@@ -39,19 +37,3 @@ const RoleSelection = () => {
 
 export default RoleSelection;
 
-
-
-/*<div className="space-y-2">
-  <Label>Select Your Role:</Label>
-  {/* Assuming RadioGroup component *
-  <RadioGroup value={role} onValueChange={(value) => setRole(value as Role)} className="flex space-x-4">
-        <div className="flex items-center space-x-2">
-            <RadioGroupItem value="STUDENT" id="role-student" />
-            <Label htmlFor="role-student">I need help (Student/Parent)</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-            <RadioGroupItem value="TEACHER" id="role-teacher" />
-            <Label htmlFor="role-teacher">I want to teach (Teacher)</Label>
-        </div>
-  </RadioGroup>
-</div>*/

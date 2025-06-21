@@ -1,22 +1,23 @@
 // app/how-it-works/page.tsx
-import Header from "@/ui/home/Header";
-import Footer from "@/ui/Footer";
+
 import Image from "next/image"; // Using Next.js Image component for visuals
 import Link from "next/link";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"; // Optional: for FAQs
-import { Card } from "@/components/ui/card"; // Optional: Can use Cards for steps too
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"; // Optional: 
+
+
+
 
 export default function HowItWorksPage() {
   return (
     <div className="flex min-h-screen flex-col">
-      {/*<Header />*/}
+     
       <main className="flex-grow container px-4 md:px-6 py-8 md:py-12">
         <h1 className="text-4xl font-bold text-center mb-8 md:mb-12">How Learn9ja Works</h1>
 
         <div className="mx-auto text-lg text-gray-700 dark:text-gray-300 space-y-16">
 
           <p className="text-center md:text-left">
-            Getting started with Learn9ja is simple, whether you're here to learn or to teach. Our platform is designed for clarity and ease of use, guiding you through each step to connect and engage in live video classes.
+            Getting started with Learn9ja is simple, whether you&apos;re here to learn or to teach. Our platform is designed for clarity and ease of use, guiding you through each step to connect and engage in live video classes.
           </p>
 
           {/* ======================================= */}
@@ -67,7 +68,7 @@ export default function HowItWorksPage() {
                  <div className="md:w-1/2 space-y-3">
                    <h3 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">Step 2: Book and Schedule</h3>
                    <p>
-                     Once you've found a teacher, select an available time slot that fits your schedule. Our secure payment system processes the transaction smoothly. You'll receive instant confirmation and calendar invites.
+                     Once you&apos;ve found a teacher, select an available time slot that fits your schedule. Our secure payment system processes the transaction smoothly. You&apos;ll receive instant confirmation and calendar invites.
                    </p>
                     {/* Optional: Add a CTA related to the step */}
                    <Link href="/find-teachers" className="text-primary hover:underline">Learn More About Booking</Link>

@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
                     }
                 }); // Commit transaction
                 console.log(`[Auth Callback] Profile creation/update transaction committed for user ${user.id}`);
-            } catch (profileError: any) {
+            } catch (profileError) {
                 console.error(`[Auth Callback] CRITICAL: Error saving profile to DB for user ${user.id}:`, profileError);
                 return NextResponse.redirect(`${origin}/login?error=Account confirmed, but failed to save profile details. Please contact support.`);
             }
@@ -103,10 +103,16 @@ export async function GET(request: NextRequest) {
         console.log('[Auth Callback] Profile checked/created. Redirecting to /dashboard...');
         return NextResponse.redirect(`${origin}/dashboard`);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         // Catch errors from any step above
-        console.error("[Auth Callback] Overall error in GET handler:", error.message);
-        return NextResponse.redirect(`${origin}/login?error=Authentication process failed: ${error.message}`);
+        console.error("[Auth Callback] Overall error in GET handler:", error);
+        if (error instanceof Error) {
+            return NextResponse.redirect(`${origin}/login?error=Authentication process failed: ${error.message}`);
+        }
+
+      // Fallback for non-Error types
+      return { success: false, error: "An unknown error occurred while authenticating. Try again!" };
+       
     }
   }
 

@@ -72,23 +72,29 @@ export async function updateUserProfileSettings(inputData: ProfileSettingsInput)
         console.log(`User profile updated for ${user.id}`);
         return { success: true };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (error instanceof ZodError) {
             console.error("Profile settings validation failed:", error.errors);
             return { success: false, error: `Invalid input: ${error.errors[0]?.message}` };
         }
         console.error(`Error updating profile settings for ${user.id}:`, error);
-        return { success: false, error: error.message || 'Failed to update profile.' };
-    }
-}
+    
+        if (error instanceof Error) {
+            return { success: false, error: error.message || 'Failed to respond to booking request.' };
+        }
 
+        // Fallback for non-Error types
+        return { success: false, error: 'An unknown error occurred while updating profile.' };
+    }
+       
+}
 
 // --- Update Payment Settings Action (Placeholder) ---
 
 interface PaymentSettingsInput {
     // Define based on actual fields when implementing Stripe etc.
     // e.g., stripeToken?: string; connectOnboarding?: boolean;
-    [key: string]: any; // Placeholder
+    [key: string]: unknown; // Placeholder
 }
 
 export async function updatePaymentSettings(inputData: PaymentSettingsInput): Promise<ActionResult> {
@@ -96,7 +102,7 @@ export async function updatePaymentSettings(inputData: PaymentSettingsInput): Pr
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) return { success: false, error: 'Unauthorized' };
 
-    console.warn("updatePaymentSettings action called but not fully implemented.");
+    console.warn("updatePaymentSettings action called but not fully implemented.", inputData);
 
     // TODO: Implement actual payment/payout logic here
     // 1. Fetch user role from DB
@@ -123,9 +129,16 @@ export async function updatePaymentSettings(inputData: PaymentSettingsInput): Pr
          console.log(`Payment settings placeholder updated for ${user.id}`);
          return { success: true };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
          console.error(`Error updating payment settings for ${user.id}:`, error);
-         return { success: false, error: error.message || 'Failed to update payment settings.' };
+         
+        if (error instanceof Error) {
+            return { success: false, error: error.message || 'Failed to respond to update payment settings.' };
+        }
+
+        // Fallback for non-Error types
+        return { success: false, error: 'An unknown error occurred while updating payment settings.' };
     }
+   
 }
 

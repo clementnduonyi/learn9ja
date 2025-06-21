@@ -3,6 +3,7 @@
 
 import { createClient } from '@/lib/supabase/server'; // Use the server client
 import prisma from '@/lib/prisma'; // Use your Prisma client instance
+import { Prisma } from '@prisma/client';
 import { CompleteUserProfileArgs, ActionResult } from "@/lib/types"
 
 
@@ -49,9 +50,10 @@ export async function completeUserProfile(args: CompleteUserProfileArgs): Promis
                 email: email,
                 name: name,
                 role: role,
-                // avatarUrl can be added later
+                // avatarUrl: avatarUrl
             },
         });
+        console.log(newProfile)
 
         // 4. If the user is a Teacher, create the TeacherProfile entry
         if (role === 'TEACHER') {
@@ -68,9 +70,12 @@ export async function completeUserProfile(args: CompleteUserProfileArgs): Promis
         console.log(`Successfully created profile for user ${userId}`);
         return { success: true };
 
-    } catch (error: any) {
+    } catch (error) {
         console.error(`Error creating profile for user ${userId}:`, error);
         // Check for specific Prisma errors if needed (e.g., unique constraint)
-        return { success: false, error: error.message || 'Failed to save user profile to database.' };
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+            return { success: false, error: error.message || 'Failed to save user profile to database.' };
+        }
+       
     }
 }

@@ -42,15 +42,22 @@
 
             return { success: true };
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(`Error marking notifications read for user ${userId}:`, error);
-            return { success: false, error: 'Failed to update notifications.' };
+            
+            if (error instanceof Error) {
+            return { success: false, error: error.message || 'Failed to respond to booking request.' };
+        }
+
+        // Fallback for non-Error types
+        return { success: false, error: 'An unknown error occurred while updating notifications.' };
         }
     }
 
     // Optional: Action to mark a single notification as read (if needed later)
-    export async function markNotificationRead(notificationId: string): Promise<ActionResult> {
+   /* export async function markNotificationRead(notificationId: string): Promise<ActionResult> {
        // Similar logic: get user, find notification by ID, verify ownership, update isRead, revalidate
-       return { success: false, error: 'Not implemented yet.' };
-    }
+       
+       return { success: false, error: 'Not implemented yet.'};
+    }*/
     

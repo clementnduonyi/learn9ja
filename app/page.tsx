@@ -1,5 +1,5 @@
 import HeroSection from "@/components/HeroSection"
-import HowItWorksSection from "@/ui/home/HowItWorksSection";
+// import HowItWorksSection from "@/ui/home/HowItWorksSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import BenefitsSection from "@/ui/home/BenefitsSection";
 import TeacherCard from '@/components/TeacherCard'
@@ -52,6 +52,8 @@ export default async function HomePage() {
             </div>
           {/*</div>*/}
         </section>
+
+         <BenefitsSection />
         
         <CTASection />
       </main>
@@ -59,14 +61,5 @@ export default async function HomePage() {
 
 
 )
-    {/*<div className="flex min-h-screen flex-col">
-      <main className="flex-grow">
-        <HeroSection />
-        <HowItWorksSection /> 
-        <FeaturesSection />
-        <BenefitsSection />
-        <CallToActionSection />
-      </main>
-    </div>*/}
   
 }

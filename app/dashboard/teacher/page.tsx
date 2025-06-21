@@ -3,9 +3,8 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import prisma from '@/lib/prisma';
-import { Prisma, BookingStatus, Role, TeacherStatus, Subject } from '@prisma/client'; // Import necessary types/enums
+import { Prisma, BookingStatus, Role, Subject } from '@prisma/client'; // Import necessary types/enums
 import TeacherRequestList from '@/components/teacher/TeacherRequestList';
-import TeacherProfileForm from '@/components/profile/TeacherProfileForm';
 import UpcomingBookingsList from '@/components/teacher/UpcomingBookingList';
 // Import shared types if defined elsewhere, otherwise define here
 // import type { /* ... */ } from '@/types';
@@ -78,7 +77,7 @@ export default async function TeacherDashboardPage() {
              redirect('/profile/teacher/edit?error=Profile setup needed'); // Redirect to edit page
         }
 
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error fetching teacher dashboard data:", error);
         fetchError = "Could not load your dashboard data.";
         // Optionally handle specific errors or redirect
@@ -101,22 +100,22 @@ export default async function TeacherDashboardPage() {
                     orderBy: { requestedTime: 'asc' },
                 })
             ]);
-        } catch (error: any) {
+        } catch (error) {
              console.error("Error fetching teacher bookings:", error);
              fetchError = "Could not load booking information."; // Set error if booking fetch fails
         }
     }
 
     // --- 4. Fetch All Subjects (for Profile Form) ---
-    let allSubjects: Subject[] = []; // Initialize empty
+    /*let allSubjects: Subject[] = []; // Initialize empty
     if (!fetchError && teacherData) { // Only fetch if needed and no prior error
          try {
              allSubjects = await prisma.subject.findMany({ orderBy: { name: 'asc' } });
-         } catch (error: any) {
+         } catch (error) {
               console.error("Error fetching all subjects:", error);
               fetchError = "Could not load subject list for profile editing.";
          }
-    }
+    }*/
 
 
     // --- 5. Render Dashboard ---
@@ -154,16 +153,6 @@ export default async function TeacherDashboardPage() {
                   <UpcomingBookingsList bookings={upcomingBookings} />
              </section>
 
-             {/* Section 3: Profile Management 
-             <section id="profile-management" aria-labelledby="profile-management-heading">
-                  <h2 id="profile-management-heading" className="text-2xl font-semibold mb-4 border-b pb-2">Manage Profile & Availability</h2>
-                  {/* Pass the correctly fetched teacherProfile data *
-                  <TeacherProfileForm
-                      userId={user.id}
-                      initialProfile={teacherData.teacherProfile} // Pass the nested teacherProfile object
-                      allSubjects={allSubjects}
-                  />
-             </section>*/}
         </div>
     );
 }

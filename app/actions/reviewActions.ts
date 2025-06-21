@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import prisma from '@/lib/prisma';
-import { BookingStatus, Prisma } from '@prisma/client';
+import { BookingStatus } from '@prisma/client';
 import { z, ZodError } from 'zod';
 
 // Standard return type
@@ -120,14 +120,21 @@ export async function submitReview(inputData: SubmitReviewInput): Promise<Action
         }, { timeout: 15000 }); // Optional: Increase timeout for transaction
 
         // Revalidate teacher profile pages or relevant lists if necessary
-       // revalidatePath(`/teacher/${revieweeUserId}`);
-        // revalidatePath('/search');
+        //revalidatePath(`/teacher/${revieweeUserId}`);
+        revalidatePath('/search');
 
 
         return { success: true };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error(`Error submitting review for booking ${bookingId}:`, error);
-        return { success: false, error: error.message || 'Failed to submit review.' };
+           
+            if (error instanceof Error) {
+            return { success: false, error: error.message || 'Failed to submit review.' };
+        }
+
+        // Fallback for non-Error types
+        return { success: false, error: 'An unknown error occurred while submitting review.' };
     }
+        
 }

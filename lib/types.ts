@@ -1,4 +1,4 @@
-import type { Subject, User, Role, Gender, SubscriptionTier, TeacherStatus } from '@prisma/client'; // Import Role enum
+import type { Subject, User, Role } from '@prisma/client'; // Import Role enum
 import {Prisma, Booking } from '@prisma/client';
 import type { JsonValue } from '@prisma/client/runtime/library';
 import type { TeacherProfile, TeacherSubject } from '@prisma/client';
@@ -245,4 +245,25 @@ export type TeacherForCard = Prisma.UserGetPayload<typeof teacherCardArgs> & {
     subjects: string[]; // Pass a simple array of subject names
     isAvailableNow?: boolean; // Indicates real-time presence
 };
+
+
+// Define Validator Args and Type for fetching data needed by the form
+export const teacherProfileEditArgs = Prisma.validator<Prisma.TeacherProfileDefaultArgs>()({
+  // Select fields directly from TeacherProfile
+  // Use 'include' for nested relations like subjectsTaught
+  include: {
+    subjectsTaught: { // Include the subjects taught by this teacher
+      select: { // Select specific fields needed by the form
+        subjectId: true,
+        levels: true, // <<< Ensure we select the string array
+      }
+    }
+    // No need to include 'user' here unless the form needs user.name etc.
+    // which it currently doesn't directly use (userId is passed separately)
+  }
+});
+// Define the type based on the validator for the initialProfile prop
+// Note: This type is TeacherProfile & { subjectsTaught: ... }
+export type TeacherProfileForEdit = Prisma.TeacherProfileGetPayload<typeof teacherProfileEditArgs>;
+
 

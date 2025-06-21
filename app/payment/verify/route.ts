@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${origin}/find-teachers?error=${errorMessage}`);
     }
 
-  } catch (error: any) {
+  } catch (error) {
     // Catch any unexpected errors that might occur during the process
     console.error("[Paystack Callback] A critical unexpected error occurred:", error);
     const errorMessage = encodeURIComponent("An unexpected server error occurred during payment verification. Please contact support.");

@@ -12,7 +12,6 @@ interface StudentBookingsDisplayProps {
 
 export default function StudentBookingsDisplay({ bookings }: StudentBookingsDisplayProps) {
 
-  
   // Group bookings by status using useMemo for efficiency
   const groupedBookings = useMemo(() => {
     const now = new Date(); // Get current time once for comparison
@@ -23,6 +22,8 @@ export default function StudentBookingsDisplay({ bookings }: StudentBookingsDisp
       PAST_ACCEPTED: [],     // Accepted but in the past (awaiting completion/review)
       RESCHEDULE_REQUESTED: [],
       COMPLETED: [],
+      DECLINED: [], 
+      CANCELLED: []
     };
 
     bookings.forEach(booking => {
@@ -49,9 +50,12 @@ export default function StudentBookingsDisplay({ bookings }: StudentBookingsDisp
         case BookingStatus.COMPLETED:
           groups.COMPLETED.push(booking);
           break;
-        default: // DECLINED, CANCELLED
-         "...";
+        case BookingStatus.DECLINED:
+          groups.DECLINED.push(booking); // DECLINED, CANCELLE
           break;
+        case BookingStatus.DECLINED:
+        groups.DECLINED.push(booking); // DECLINED, CANCELLE
+        break;
       }
     });
 

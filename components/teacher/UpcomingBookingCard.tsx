@@ -50,9 +50,8 @@ export default function UpcomingBookingCard({ booking, onResponse }: UpcomingBoo
             setCanJoin(now >= joinWindowStart && (!joinWindowEnd || now <= joinWindowEnd));
 
             // Complete logic (enable slightly after scheduled end time)
-            const completeEnableTime = endTime ? new Date(endTime.getTime() - 1 * 60000) : null; // Allow marking 1 min before end? Or exactly at end? Let's use end time.
-            setCanMarkComplete(endTime ? now >= endTime : false); // Enable only if end time exists and has passed
-
+            const completeEnableTime = endTime ? now >= endTime : false; // Exactly at end? Let's use end time.
+            setCanMarkComplete(completeEnableTime); // Enable only if end time exists and has passed
         };
 
         checkTime();
@@ -92,8 +91,8 @@ export default function UpcomingBookingCard({ booking, onResponse }: UpcomingBoo
                 // Success! Update local state to reflect completion
                 setCurrentStatus(BookingStatus.COMPLETED);
                 // Optionally call onResponse if needed, but revalidatePath handles refresh
-                // onResponse?.(booking.id);
-                // router.refresh(); // Let revalidatePath handle it usually
+                onResponse?.(booking.id);
+                router.refresh(); // Let revalidatePath handle it usually
             }
         });
     };

@@ -3,14 +3,14 @@
 
 import React, { useState, useTransition, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import type { TeacherProfile, Subject, TeacherSubject, TeacherStatus, Prisma } from '@prisma/client'; // Import Prisma for Decimal type
+import type { TeacherProfile, Subject } from '@prisma/client'; // Import Prisma for Decimal type
 import { JsonValue } from '@prisma/client/runtime/library';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input'; // Import Input
 // Import actions
-import { updateTeacherProfile, updateTeacherPayoutSettings } from '@/app/actions/teacherActions'; // Adjust paths
+import { updateTeacherProfile, /*updateTeacherPayoutSettings*/ } from '@/app/actions/teacherActions'; // Adjust paths
 
 import AvailabilityEditor, { WeeklyAvailability } from './AvailabilityEditor';
 import SubjectSelector, { SubjectLevelsSelection } from './SubjectSelector';
@@ -58,13 +58,12 @@ function formatAvailabilityToJson(availability: WeeklyAvailability): JsonValue {
 
 // --- Component ---
 export default function TeacherProfileForm({
-  userId,
   initialProfile,
   allSubjects,
 }: TeacherProfileFormProps) {
   const router = useRouter();
   const [isProfilePending, startProfileTransition] = useTransition();
-  const [isPayoutPending, startPayoutTransition] = useTransition();
+  // const [isPayoutPending, startPayoutTransition] = useTransition();
 
   // --- State ---
   const [bio, setBio] = useState(initialProfile?.bio ?? '');
@@ -83,8 +82,8 @@ export default function TeacherProfileForm({
   // Error/Success states remain the same
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileSuccess, setProfileSuccess] = useState<string | null>(null);
-  const [payoutError, setPayoutError] = useState<string | null>(null);
-  const [payoutSuccess, setPayoutSuccess] = useState<string | null>(null);
+  /*const [payoutError, setPayoutError] = useState<string | null>(null);
+  const [payoutSuccess, setPayoutSuccess] = useState<string | null>(null);*/
 
   // --- Callbacks ---
   const handleAvailabilityUpdate = useCallback((newAvailability: WeeklyAvailability) => { setCurrentAvailability(newAvailability); }, []);
@@ -127,8 +126,8 @@ export default function TeacherProfileForm({
     });
   };
 
-  const handlePayoutSetup = () => { /* ... same as before ... */ };
-  const isApprovedTeacher = initialProfile?.status === 'APPROVED';
+ /* const handlePayoutSetup = () => { /* ... same as before ... *;
+  const isApprovedTeacher = initialProfile?.status === 'APPROVED';*/
 
   return (
     <div className="space-y-10">
@@ -189,12 +188,12 @@ export default function TeacherProfileForm({
         </form>
 
         {/* Section 2: Payout Settings (Remains the same) */}
-        <div className="space-y-4 pt-6 border-t">
+        {/*<div className="space-y-4 pt-6 border-t">
              <h3 className="text-xl font-semibold">Payout Settings</h3>
-             {/* ... Payout section JSX remains the same ... */}
+             {/* ... Payout section JSX remains the same ... *}
               {!isApprovedTeacher && ( <p className="text-sm text-yellow-700 bg-yellow-50 p-3 rounded-md"> Payout setup is available only after approval. </p> )}
               {isApprovedTeacher && ( <> <p className="text-sm text-gray-600"> Connect with Stripe for secure payouts. </p> <div className="p-4 border rounded bg-gray-50 text-center text-gray-500"> Stripe Connect Status Placeholder </div> <Button type="button" onClick={handlePayoutSetup} disabled={isPayoutPending}> {isPayoutPending ? 'Processing...' : 'Setup/Manage Payouts via Stripe'} </Button> {payoutError && <p className="text-red-500 text-sm mt-2">{payoutError}</p>} {payoutSuccess && <p className="text-green-600 text-sm mt-2">{payoutSuccess}</p>} </> )}
-        </div>
+        </div>*/}
     </div>
   );
 }

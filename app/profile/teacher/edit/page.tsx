@@ -75,7 +75,7 @@ export default async function EditTeacherProfilePage() {
             // teacherProfileData = { userId: user.id, status: 'PENDING', subjectsTaught: [], bio: null, availability: null, averageRating: null, pricePerHour: null, payoutDetails: null, specializations: [], createdAt: new Date(), updatedAt: new Date() };
         }
 
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error fetching data for teacher profile edit:", error);
         fetchError = "Could not load profile data or subjects.";
     }

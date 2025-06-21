@@ -103,7 +103,7 @@ export default function StudentSearchForm({ subjects }: StudentSearchFormProps) 
                 <div>
                     <Label htmlFor="preferred-time">Preferred Date & Time* (Your Local)</Label>
                     <Input id="preferred-time" type="datetime-local" value={preferredDateTimeLocal} onChange={(e) => setPreferredDateTimeLocal(e.target.value)} required className="border-gray-300" />
-                    <p className="text-xs text-gray-500 mt-1">We'll match based on UTC equivalent.</p>
+                    <p className="text-xs text-gray-500 mt-1">We&apos;ll match based on UTC equivalent.</p>
                 </div>
 
                  {/* Max Price Input */}

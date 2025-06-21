@@ -20,7 +20,7 @@ export default function TermsAndConditionsPage() {
           <p>Last Updated: April 18, 2025</p> {/* Update date */}
 
           <p>
-            Welcome to <b>Demirite</b> ("Platform", "we", "our", or "us"). These Terms and Conditions ("Terms") govern your access to and use of the Demirite website and services, including our live video class platform. By accessing or using the Platform, you agree to be bound by these Terms and our Privacy Policy.
+            Welcome to <b>Learn9ja</b> (`"Platform"`, \"we\", \"our\", or \"us\"). These Terms and Conditions ("\Terms\") govern your access to and use of the Learn9ja website and services, including our live video class platform. By accessing or using the Platform, you agree to be bound by these Terms and our Privacy Policy.
           </p>
 
           {/* Section: Acceptance of Terms */}
@@ -83,9 +83,9 @@ export default function TermsAndConditionsPage() {
           {/* Section: Disclaimer of Warranties (Crucial Legal Section) */}
            <h2 className="text-2xl font-semibold mt-6 mb-3">10. Disclaimer of Warranties</h2>
            <p>
-             [**Requires legal input.** This section limits your liability and states that the service is provided "as is".]
+             [**Requires legal input.** This section limits your liability and states that the service is provided &lquo;as is&rquo;.]
              <br/>
-             Example Placeholder: The Platform is provided on an "AS IS" and "AS AVAILABLE" basis. We make no warranties, express or implied, regarding the operation or availability of the Platform or the information, content, materials, or products included thereon.
+             Example Placeholder: The Platform is provided on an \"AS IS\" and \"AS AVAILABLE\" basis. We make no warranties, express or implied, regarding the operation or availability of the Platform or the information, content, materials, or products included thereon.
            </p>
 
           {/* Section: Limitation of Liability (Crucial Legal Section) */}
@@ -99,7 +99,7 @@ export default function TermsAndConditionsPage() {
           {/* Section: Governing Law */}
            <h2 className="text-2xl font-semibold mt-6 mb-3">12. Governing Law</h2>
            <p>
-             [**Requires legal input.** Specify which jurisdiction's laws will govern these terms.]
+             [**Requires legal input.** Specify which jurisdiction&apos;s laws will govern these terms.]
              <br/>
              Example Placeholder: These Terms shall be governed and construed in accordance with the laws of [Your Jurisdiction], without regard to its conflict of law provisions.
            </p>

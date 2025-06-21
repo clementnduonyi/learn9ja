@@ -20,7 +20,7 @@ type SubjectData = {
     levels: string[];
  };
 
-export default function ScheduleBookingModal({ isOpen, onClose, teacher }: ScheduleModalProps) {
+export default function ScheduleBookingModal({ isOpen, teacher }: ScheduleModalProps) {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
     // Form state
@@ -39,6 +39,7 @@ export default function ScheduleBookingModal({ isOpen, onClose, teacher }: Sched
                         setSubjects(result.data);
                     } else {
                         setError(result.error || "Failed to load subjects.");
+                        return error
                     }
                 });
             }
@@ -107,7 +108,7 @@ export default function ScheduleBookingModal({ isOpen, onClose, teacher }: Sched
                 <div>
                     <Label htmlFor="preferred-time">Preferred Date & Time* (Your Local)</Label>
                     <Input id="preferred-time" type="datetime-local" value={preferredDateTimeLocal} onChange={(e) => setPreferredDateTimeLocal(e.target.value)} required className="border-gray-300" />
-                    <p className="text-xs text-gray-500 mt-1">We'll match based on UTC equivalent.</p>
+                    <p className="text-xs text-gray-500 mt-1">We&apos;ll match based on UTC equivalent.</p>
                 </div>
             
                 <div>

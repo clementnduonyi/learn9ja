@@ -125,8 +125,13 @@ export async function getJoinToken(bookingId: string): Promise<JoinTokenResult> 
       wsUrl: livekitWsUrl // Pass the connection URL
     };
 
-  } catch (error: any) {
+  } catch (error) {
     console.error(`Error generating join token for booking ${bookingId}:`, error);
-    return { success: false, error: error.message || 'Failed to generate join token.' };
+     if (error instanceof Error) {
+          return { success: false, error: error.message || 'Failed to generate join token.' };
+        }
+
+      // Fallback for non-Error types
+      return { success: false, error: "An unknown error occurred while generating join token. Try again!" };
   }
 }

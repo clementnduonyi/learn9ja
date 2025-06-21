@@ -1,7 +1,5 @@
 // app/contact/page.tsx
-// 'use client'; // Needed if using hooks or interactive form logic
 
-import Header from "@/ui/home/Header";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

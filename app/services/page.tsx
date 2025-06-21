@@ -1,4 +1,4 @@
-import prisma from '@/lib/prisma'; // Import Prisma client instance
+/*import prisma from '@/lib/prisma'; // Import Prisma client instance
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -36,9 +36,9 @@ export default async function ServicesPage() {
                 <p className="mt-4 font-semibold text-lg">${service.price.toFixed(2)}</p>
               </CardContent>
               <CardFooter>
-                {/* Link to a service detail page or an order form */}
+                {/* Link to a service detail page or an order form *}
                 <Button asChild className="w-full">
-                  {/* Adjust href based on desired flow */}
+                  {/* Adjust href based on desired flow *}
                   <Link href={`/order?serviceId=${service.id}`}>Order Now</Link>
                 </Button>
               </CardFooter>
@@ -51,4 +51,4 @@ export default async function ServicesPage() {
 }
 
 // Optional: Revalidate data periodically or on demand
-export const revalidate = 3600; // Revalidate services every hour
+export const revalidate = 3600; // Revalidate services every hour*/

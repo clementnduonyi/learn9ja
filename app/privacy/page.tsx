@@ -1,6 +1,5 @@
 // app/privacy/page.tsx
 import Header from "@/ui/home/Header";
-import Footer from "@/ui/Footer";
 import Link from "next/link";
 
 export default function PrivacyPolicyPage() {
@@ -14,14 +13,14 @@ export default function PrivacyPolicyPage() {
 
            <div className="p-4 bg-yellow-100 text-yellow-800 rounded-md dark:bg-yellow-900 dark:text-yellow-200">
              <p className="font-bold">Legal Disclaimer:</p>
-             <p>This is NOT legal advice. We have consulted with a legal professional to draft a comprehensive Privacy Policy that complies with all relevant data protection laws (like GDPR, CCPA, etc.) and accurately reflects our app's data collection, use, and sharing practices.</p>
+             <p>This is NOT legal advice. We have consulted with a legal professional to draft a comprehensive Privacy Policy that complies with all relevant data protection laws (like GDPR, CCPA, etc.) and accurately reflects our app&apos;s data collection, use, and sharing practices.</p>
           </div>
 
 
           <p>Last Updated: April 18, 2025</p> {/* Update date */}
 
           <p>
-            <b>Demirite</b> ("we", "our", or "us") is committed to protecting the privacy of our users ("user", "you"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website [Your Website URL] and use our live video class platform.
+            <b>Learn9ja</b> ("\we\", "\our\", or "\us\") is committed to protecting the privacy of our users ("\user\", "you"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website [Your Website URL] and use our live video class platform.
           </p>
 
           {/* Section: Information We Collect */}

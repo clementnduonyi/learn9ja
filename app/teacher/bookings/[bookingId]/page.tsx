@@ -14,12 +14,49 @@ export type PlainTeacherBookingWithDetails = Omit<PrismaTeacherBookingWithDetail
   calculatedPrice: number | null;
 };
 
+// This function dynamically generates metadata for a page based on its params.
+// It should be placed in the `page.tsx` file of a dynamic route.
 export async function generateMetadata({ params }: { params: { bookingId: string } }) {
-  // TODO: Fetch minimal data for title
-  return {
-    title: `Booking Details`,
-  };
-}
+  try {
+    const bookingId = params.bookingId;
+
+    // Fetch minimal data needed for the title from the database.
+    // Selecting only the necessary fields is more efficient.
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      select: {
+        subject: {
+          select: { name: true }
+        },
+        student: {
+          select: { name: true }
+        }
+      }
+    });
+
+    // If no booking is found, you might want to handle it,
+    // though the page itself will likely throw a 404.
+    if (!booking) {
+      return {
+        title: 'Booking Not Found',
+      };
+    }
+
+    // Construct a dynamic and informative title.
+    const title = `Session for ${booking.subject.name} with ${booking.student.name}`;
+
+    return {
+      title: title,
+      description: `Details for your scheduled session for ${booking.subject.name}.` // Optional: add a dynamic description
+    };
+
+  } catch (error) {
+    console.error("Error generating metadata for booking:", error);
+    // Return a generic title if there's an error
+    return {
+      title: 'Booking Details',
+    };
+}}
 
 export default async function TeacherBookingDetailPage({ params }: { params: { bookingId: string } }) {
     const supabase = await createClient();
@@ -80,34 +117,14 @@ export default async function TeacherBookingDetailPage({ params }: { params: { b
         } else {
             notFound();
         }
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error fetching student booking detail:", error);
         fetchError = "Could not load booking details.";
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
                 notFound();
         }
     }
-    /*try {
-        booking = await prisma.booking.findUnique({
-            where: {
-                id: bookingId,
-                teacherUserId: user.id, // <<< Ensure user is the TEACHER for this booking
-            },
-            ...teacherBookingArgs // Use the defined include args
-        });
-        
-
-        if (!booking) {
-            notFound(); // Booking doesn't exist or doesn't belong to this teacher
-        }
-    } catch (error: any) {
-        console.error("Error fetching teacher booking detail:", error);
-        fetchError = "Could not load booking details.";
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-             notFound();
-        }
-    }*/
-
+    
     // --- Render ---
     return (
         // Uses DashboardLayout

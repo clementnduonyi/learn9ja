@@ -1,15 +1,11 @@
 'use server'
 
 
-
-
-
-
 // src/app/actions/studentActions.ts
-//'use server';
+
 
 import prisma from '@/lib/prisma';
-import { Prisma, TeacherStatus } from '@prisma/client';
+import { TeacherStatus } from '@prisma/client';
 import { z, ZodError } from 'zod';
 // Import the EXACT types needed for the card from the shared types file
 import { teacherCardArgs, type TeacherForCard } from '@/lib/types';
@@ -208,8 +204,15 @@ export async function findAvailableTeachers(
         console.log("--- findAvailableTeachers Action END (Success) ---");
         return { success: true, data: searchResults };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         // ... (error handling) ...
-        return { success: false, error: "Failed to search for teachers." };
-    }
+         // Check if the error is an instance of Error to safely access its message property
+        if (error instanceof Error) {
+            return { success: false, error: error.message || 'Failed to search for teachers.' };
+            }
+
+            // Fallback for non-Error types
+            return { success: false, error: 'An unknown error occurred while initiating your payment.' };
+            
+        }
 }

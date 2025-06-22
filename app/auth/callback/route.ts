@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+/*import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import prisma from '@/lib/prisma'; // Import Prisma client
@@ -118,5 +118,89 @@ export async function GET(request: NextRequest) {
 
   // Fallback redirect if no code is present in the URL
   return NextResponse.redirect(`${origin}/login?error=Authentication callback link invalid (no code).`);
+}*/
+
+
+
+// src/app/auth/callback/route.ts
+
+import { createClient } from '@/lib/supabase/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import prisma from '@/lib/prisma';
+import { Role, Gender, TeacherStatus } from '@prisma/client';
+
+export async function GET(request: NextRequest) {
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get('code');
+  const origin = requestUrl.origin;
+
+  if (code) {
+    const supabase = await createClient();
+    try {
+        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        if (exchangeError) throw new Error(`Session exchange failed: ${exchangeError.message}`);
+
+        const { data: { user }, error: getUserError } = await supabase.auth.getUser();
+        if (getUserError || !user) throw new Error('Could not verify user after confirmation.');
+
+        const existingProfile = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { id: true, role: true }
+        });
+
+        if (!existingProfile || !existingProfile.role) {
+            const name = user.user_metadata?.full_name || 'New User';
+            const role = user.user_metadata?.selected_role as Role | undefined;
+            const gender = user.user_metadata?.selected_gender as Gender | undefined;
+
+            if (!role) {
+                console.error(`[Auth Callback] CRITICAL: Role missing for user ${user.id}.`);
+                // FIX: Redirect with an error instead of returning an object
+                return NextResponse.redirect(`${origin}/login?error=Profile+setup+failed+(missing+role).`);
+            }
+
+            try {
+                await prisma.$transaction(async (tx) => {
+                    await tx.user.upsert({
+                        where: { id: user.id },
+                        update: { name, role, gender },
+                        create: { id: user.id, email: user.email, name, role, gender },
+                    });
+
+                    if (role === Role.TEACHER) {
+                        const existingTeacherProfile = await tx.teacherProfile.findUnique({ where: { userId: user.id } });
+                        if (!existingTeacherProfile) {
+                            await tx.teacherProfile.create({
+                                data: { userId: user.id, availability: {}, status: TeacherStatus.PENDING },
+                            });
+                        }
+                    }
+                });
+            } catch (profileError: unknown) {
+                // Throw to be caught by the outer catch block
+                if (profileError instanceof Error) {
+                    throw new Error(`DB Save Failed: ${profileError.message}`);
+                }
+                throw new Error("An unknown error occurred while saving the profile.");
+            }
+        }
+
+        // Determine redirect path after profile is confirmed to exist
+        const finalProfile = await prisma.user.findUnique({ where: { id: user.id }, select: { role: true } });
+        const redirectPath = finalProfile?.role === Role.TEACHER ? '/dashboard/teacher' : '/dashboard/student';
+        return NextResponse.redirect(`${origin}${redirectPath}`);
+
+    } catch (error: unknown) {
+        // This outer catch block handles all errors and ensures a valid response
+        console.error("[Auth Callback] Overall error:", error);
+        const message = error instanceof Error ? error.message : "An unknown error occurred.";
+        return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(message)}`);
+    }
+  }
+
+  // Fallback redirect if no code is present
+  return NextResponse.redirect(`${origin}/login?error=Authentication+callback+link+is+invalid.`);
 }
+
 

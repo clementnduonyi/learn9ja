@@ -10,7 +10,7 @@ import type { PlainTeacherBookingWithDetails } from '@/app/teacher/bookings/[boo
 import { Button } from '@/components/ui/button';
 // Import relevant actions
 import { respondToBookingRequest } from '@/app/actions/bookingResponseActions'; // Or bookingActions
-import { cancelBooking, completeBooking } from '@/app/actions/bookingActions';
+import { cancelBooking, completeBooking, acknowledgeRescheduleRequest } from '@/app/actions/bookingActions';
 import { getJoinToken } from '@/app/actions/videoActions';
 
 interface TeacherBookingDetailClientProps {
@@ -101,7 +101,19 @@ export default function TeacherBookingDetailClient({ booking }: TeacherBookingDe
         });
      };
 
-    // TODO: Add handler for responding to reschedule request (needs defined logic/actions)
+    
+    // --- NEW: Handler for Acknowledging Reschedule Request ---
+
+    const handleAcknowledgeReschedule = () => {
+        setActionError(null);
+        if (!confirm("This will cancel the booking and notify the student to book a new time. Are you sure?")) return;
+        startActionTransition(async () => {
+            const result = await acknowledgeRescheduleRequest(booking.id);
+            if (result.error) { setActionError(result.error); }
+            else { setCurrentStatus('CANCELLED'); router.refresh(); }
+        });
+    };
+
 
     
 
@@ -149,9 +161,19 @@ export default function TeacherBookingDetailClient({ booking }: TeacherBookingDe
                  {currentStatus === BookingStatus.RESCHEDULE_REQUESTED && (
                      <>
                         <p className="text-sm italic text-blue-700 p-2 w-full">Student requested to reschedule. Please contact them directly to arrange a new time.</p>
-                        {/* TODO: Add buttons to Acknowledge (set back to ACCEPTED?) or Cancel? */}
-                       {/* <Button variant="outline" size="sm" onClick={handleCancel} disabled={isActionPending}>Cancel Booking</Button>
-                        {<Button variant="secondary" size="sm" onClick={handleAcknowledgeReschedule} disabled={isActionPending}>Acknowledge</Button>}*/}
+                        {/* Buttons to Acknowledge (set back to ACCEPTED?) or Cancel? */}
+                       <Button variant="outline" size="sm" onClick={handleCancel} disabled={isActionPending}>
+                            Cancel Booking
+                       </Button>
+
+                        <Button 
+                            variant="secondary" 
+                            size="sm" 
+                            onClick={handleAcknowledgeReschedule} 
+                            disabled={isActionPending}
+                        >
+                            Acknowledge
+                        </Button>
                     </>
                 )}
                  {currentStatus === BookingStatus.COMPLETED && (

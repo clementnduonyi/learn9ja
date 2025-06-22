@@ -25,7 +25,7 @@ interface TeacherCardProps {
   }
 }
 
-function getDisplayAvatar(avatarUrl: string | null | undefined, gender: any): string {
+function getDisplayAvatar(avatarUrl: string | null | undefined, gender: unknown ): string {
     if (avatarUrl) return avatarUrl;
     switch (gender) { case 'MALE': return '/avatars/default-male.svg'; case 'FEMALE': return '/avatars/default-female.svg'; default: return '/avatars/default-other.svg'; }
 }

@@ -27,21 +27,45 @@ interface TeacherProfileFormProps {
 
 // Helper functions (parseAvailabilityJson, formatAvailabilityToJson) remain the same...
 function parseAvailabilityJson(json: JsonValue | null | undefined): WeeklyAvailability {
-    // ... implementation ...
-     if (!json || typeof json !== 'object' || Array.isArray(json)) { return {}; }
-     const parsed: WeeklyAvailability = {};
-     for (const day of ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']) {
-         if (Array.isArray((json as any)[day])) {
-             parsed[day as keyof WeeklyAvailability] = (json as any)[day]
-                 .map((slot: string) => {
-                     const times = slot.split('-');
-                     if (times.length === 2 && /^\d{2}:\d{2}$/.test(times[0]) && /^\d{2}:\d{2}$/.test(times[1])) {
-                         return { start: times[0], end: times[1] };
-                     } return null;
-                 }).filter((s: { start: string; end: string; } | null): s is { start: string; end: string; } => s !== null);
-         }
-     } return parsed;
+    // Guard against non-object types
+    if (!json || typeof json !== 'object' || Array.isArray(json)) {
+        return {};
+    }
+
+    // Type the incoming json as a record we can safely index
+    const availabilityObject = json as Record<string, unknown>;
+    const parsed: WeeklyAvailability = {};
+    const days: (keyof WeeklyAvailability)[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+
+    for (const day of days) {
+        // Safely get the value for the current day
+        const daySlots = availabilityObject[day];
+
+        // Check if the value is an array before processing
+        if (Array.isArray(daySlots)) {
+            const validSlots = daySlots
+                .map((slot: unknown) => { // Treat each item as 'unknown' for safety
+                    // Ensure the slot is a string before trying to split it
+                    if (typeof slot !== 'string') return null;
+
+                    const times = slot.split('-');
+                    if (times.length === 2 && /^\d{2}:\d{2}$/.test(times[0]) && /^\d{2}:\d{2}$/.test(times[1])) {
+                        return { start: times[0], end: times[1] };
+                    }
+                    return null; // Return null for malformed strings
+                })
+                .filter((s): s is { start: string; end: string; } => s !== null); // Type predicate correctly filters out nulls
+
+            if (validSlots.length > 0) {
+                 parsed[day] = validSlots;
+            }
+        }
+    }
+    return parsed;
 }
+
+
+
 function formatAvailabilityToJson(availability: WeeklyAvailability): JsonValue {
     // ... implementation ...
      const jsonResult: Record<string, string[]> = {};

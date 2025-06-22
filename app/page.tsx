@@ -1,7 +1,7 @@
 import HeroSection from "@/components/HeroSection"
 // import HowItWorksSection from "@/ui/home/HowItWorksSection";
 import FeaturesSection from "@/components/FeaturesSection";
-import BenefitsSection from "@/ui/home/BenefitsSection";
+import BenefitsSection from "@/components/home/BenefitsSection";
 import TeacherCard from '@/components/TeacherCard'
 import CTASection from "@/components/CTASection";
 import { getFeaturedTeachers } from "@/app/actions/teacherActions";

@@ -32,6 +32,7 @@ export default function StudentBookingDetailClient({ booking }: StudentBookingDe
     // Use booking.status directly, or sync to local state if needed for immediate feedback
     const [currentStatus, setCurrentStatus] = useState(booking.status);
     const [canJoin, setCanJoin] = useState(false);
+    const [canReschedule, setCanReschedule] = useState(false);
 
     // Effect to determine if Join button should be enabled
     useEffect(() => {
@@ -44,6 +45,16 @@ export default function StudentBookingDetailClient({ booking }: StudentBookingDe
             const joinWindowEnd = endTime ? new Date(endTime.getTime() + 15 * 60000) : null;
             setCanJoin(now >= joinWindowStart && (!joinWindowEnd || now <= joinWindowEnd));
         };
+
+        if (booking.status === 'ACCEPTED') {
+            const now = new Date();
+            const oneHourInMillis = 60 * 60 * 1000;
+            const sessionStartTime = new Date(booking.requestedTime);
+            setCanReschedule(sessionStartTime.getTime() - now.getTime() > oneHourInMillis);
+        } else {
+            setCanReschedule(false);
+        };
+
         checkTime();
         const interval = setInterval(checkTime, 60000);
         return () => clearInterval(interval);
@@ -116,10 +127,33 @@ export default function StudentBookingDetailClient({ booking }: StudentBookingDe
                     )}
                     {currentStatus === BookingStatus.ACCEPTED && (
                         <>
-                            <Button variant="default" size="sm" onClick={handleJoinCall} disabled={!canJoin || isActionPending} title={!canJoin ? `Available soon` : "Join Call"}>Join Call</Button>
-                            <Button variant="outline" size="sm" onClick={handleRescheduleRequest} disabled={isActionPending}>Request Reschedule</Button>
-                            <Button variant="default" size="sm" onClick={handleCancel} disabled={isActionPending}>Cancel Booking</Button> {/* Destructive variant */}
+                            <Button 
+                                variant="default" 
+                                size="sm" 
+                                onClick={handleJoinCall} 
+                                disabled={!canJoin || isActionPending} 
+                                title={!canJoin ? `Available soon` : "Join Call"}
+                                
+                            >
+                                Join Call
+                            </Button>
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={handleRescheduleRequest} 
+                                disabled={isActionPending  || !canReschedule}
+                                title={!canReschedule ? "Cannot reschedule less than 1 hour before start" : "Request a new time"}
+                            >
+
+                                Request Reschedule
+                            </Button>
+
+                            <Button variant="default" size="sm" onClick={handleCancel} disabled={isActionPending}>
+                            Cancel  Booking
+                            </Button> {/* Destructive variant */}
                         </>
+
+                       
                     )}
                      {currentStatus === BookingStatus.RESCHEDULE_REQUESTED && (
                          <>

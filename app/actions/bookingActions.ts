@@ -302,24 +302,18 @@ export async function completeBooking(bookingId: string): Promise<ActionResult> 
     }
 }
 
-// ---Request Reschedule Action ---
-export async function requestReschedule(
-    bookingId: string,
-    reason?: string // Optional reason from student
-): Promise<ActionResult> {
-    const supabase = await createClient();
 
-    // 1. Get User Session
+
+export async function requestReschedule(bookingId: string, reason?: string): Promise<ActionResult> {
+    const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) return { success: false, error: 'Unauthorized' };
-    const studentUserId = user.id;
 
+    const studentUserId = user.id;
     if (!bookingId) return { success: false, error: 'Booking ID required.' };
 
     try {
-        // Use transaction for atomicity
         await prisma.$transaction(async (tx) => {
-            // 2. Fetch booking & validate
             const booking = await tx.booking.findUnique({
                 where: { id: bookingId },
                 select: { status: true, studentUserId: true, teacherUserId: true, subject: { select: { name: true } }, level: true, requestedTime: true }
@@ -327,48 +321,38 @@ export async function requestReschedule(
 
             if (!booking) throw new Error("Booking not found.");
             if (booking.studentUserId !== studentUserId) throw new Error("Forbidden: Not your booking.");
-            // Can only request reschedule for ACCEPTED bookings
             if (booking.status !== BookingStatus.ACCEPTED) throw new Error(`Cannot request reschedule: Booking status is ${booking.status}.`);
-            // Optional: Add time constraint (e.g., cannot request reschedule within X hours of start)
-            // const now = new Date();
-            // if (new Date(booking.requestedTime).getTime() - now.getTime() < SOME_THRESHOLD_MS) {
-            //    throw new Error("Cannot request reschedule too close to the start time.");
-            // }
 
+            // --- Time Constraint Logic ---
+            // Allow rescheduling only up to 1 hour before the session starts.
+            const now = new Date();
+            const oneHourInMillis = 60 * 60 * 1000;
+            const sessionStartTime = new Date(booking.requestedTime);
 
-            // 3. Update status
+            if (sessionStartTime.getTime() - now.getTime() < oneHourInMillis) {
+               throw new Error("Cannot request a reschedule less than 1 hour before the session is due to start.");
+            }
+            // --- End Time Constraint Logic ---
+
             await tx.booking.update({
                 where: { id: bookingId },
                 data: { status: BookingStatus.RESCHEDULE_REQUESTED }
             });
-            console.log(`Booking ${bookingId} status updated to RESCHEDULE_REQUESTED by student ${studentUserId}`);
 
-            // 4. Notify Teacher
+            // Notify Teacher
             const studentName = user.user_metadata?.full_name || 'Your student';
-            const subjectName = booking.subject?.name || 'the session';
-            const formattedTime = booking.requestedTime.toLocaleString();
-            try {
-                await tx.notification.create({
-                    data: {
-                        userId: booking.teacherUserId,
-                        message: `${studentName} requested to reschedule the ${subjectName} (${booking.level}) session originally set for ${formattedTime}. Reason: ${reason || '(No reason provided)'}`,
-                        link: `/teacher/requests/${bookingId}` // Link for teacher to view
-                    }
-                });
-            } catch (notifError) { console.error("Reschedule Notify Error:", notifError); }
+            const message = `${studentName} requested to reschedule the ${booking.subject?.name} (${booking.level}) session from ${sessionStartTime.toLocaleString()}. Reason: ${reason || '(No reason provided)'}`;
+            await tx.notification.create({
+                data: { userId: booking.teacherUserId, message: message, link: `/teacher/bookings/${bookingId}` }
+            });
+        });
 
-        }); // End transaction
-
-        // Revalidate relevant paths
         revalidatePath('/dashboard/student');
         revalidatePath('/dashboard/teacher');
-        revalidatePath(`/student/bookings/${bookingId}`); // If such pages exist
-        revalidatePath(`/teacher/requests/${bookingId}`);
-
         return { success: true };
 
     } catch (error: unknown) {
-      console.error(`Error requesting reschedule for booking ${bookingId}:`, error);
+       console.error(`Error requesting reschedule for booking ${bookingId}:`, error);
       // Check if the error is an instance of Error to safely access its message property
       if (error instanceof Error) {
           return { success: false, error: error.message || 'Failed to reschedule session.' };
@@ -376,6 +360,59 @@ export async function requestReschedule(
 
       // Fallback for non-Error types
       return { success: false, error: 'An unknown error occurred while rescheduling your session. Try agaian later!' };
+      
+    }
+}
+
+
+// --- NEW: Acknowledge Reschedule Request (Teacher's Action) ---
+export async function acknowledgeRescheduleRequest(bookingId: string): Promise<ActionResult> {
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) return { success: false, error: 'Unauthorized' };
+
+    const teacherUserId = user.id;
+    if (!bookingId) return { success: false, error: 'Booking ID required.' };
+
+    try {
+        await prisma.$transaction(async (tx) => {
+            const booking = await tx.booking.findUnique({
+                where: { id: bookingId },
+                select: { status: true, teacherUserId: true, studentUserId: true, subject: { select: { name: true } }, level: true }
+            });
+
+            if (!booking) throw new Error("Booking not found.");
+            if (booking.teacherUserId !== teacherUserId) throw new Error("Forbidden: Not your booking.");
+            if (booking.status !== BookingStatus.RESCHEDULE_REQUESTED) throw new Error(`Cannot acknowledge: Booking status is ${booking.status}.`);
+
+            // Set status to CANCELLED, freeing up the slot officially.
+            await tx.booking.update({
+                where: { id: bookingId },
+                data: { status: BookingStatus.CANCELLED }
+            });
+
+            // Notify Student
+            const teacherName = user.user_metadata?.full_name || 'The teacher';
+            const message = `${teacherName} has acknowledged your reschedule request for the ${booking.subject?.name} (${booking.level}) session. Please feel free to book a new time.`;
+            await tx.notification.create({
+                data: { userId: booking.studentUserId, message: message, link: `/find-teachers` }
+            });
+        });
+
+        revalidatePath('/dashboard/student');
+        revalidatePath('/dashboard/teacher');
+        return { success: true };
+
+    } catch (error: unknown) {
+         console.error(`Error acknowledging request for session reschedule ${bookingId}:`, error);
+      // Check if the error is an instance of Error to safely access its message property
+      if (error instanceof Error) {
+          return { success: false, error: error.message || 'Failed to acknowledge request.' };
+      }
+
+      // Fallback for non-Error types
+      return { success: false, error: 'An unknown error occurred while acknowledging request. Try agaian later!' };
+      
     }
 }
 
@@ -440,7 +477,7 @@ export async function cancelBooking(bookingId: string): Promise<ActionResult> {
                     data: {
                         userId: otherUserId,
                         message: `The ${subjectName} (${booking.level}) session scheduled for ${formattedTime} was cancelled by ${cancellerName}.`,
-                        link: isStudentCancelling ? `/teacher/requests/${bookingId}` : `/student/bookings/${bookingId}` // Link to relevant view
+                        link: isStudentCancelling ? `/teacher/bookings/${bookingId}` : `/student/bookings/${bookingId}` // Link to relevant view
                     }
                 });
             } catch (notifError) { console.error("Cancel Notify Error:", notifError); }
@@ -451,7 +488,6 @@ export async function cancelBooking(bookingId: string): Promise<ActionResult> {
         revalidatePath('/dashboard/student');
         revalidatePath('/dashboard/teacher');
         revalidatePath(`/student/bookings/${bookingId}`);
-        revalidatePath(`/teacher/requests/${bookingId}`);
         revalidatePath(`/teacher/bookings/${bookingId}`); // If teacher has separate scheduled list
 
 

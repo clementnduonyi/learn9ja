@@ -1,5 +1,5 @@
 // app/privacy/page.tsx
-import Header from "@/ui/home/Header";
+import Header from "@/components/home/Header";
 import Link from "next/link";
 
 export default function PrivacyPolicyPage() {
@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
           <p>Last Updated: April 18, 2025</p> {/* Update date */}
 
           <p>
-            <b>Learn9ja</b> ("\we\", "\our\", or "\us\") is committed to protecting the privacy of our users ("\user\", "you"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website [Your Website URL] and use our live video class platform.
+            <b>Learn9ja</b> (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting the privacy of our users (&quot;user&quot;, &quot;you&quot;). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website [Your Website URL] and use our live video class platform.
           </p>
 
           {/* Section: Information We Collect */}

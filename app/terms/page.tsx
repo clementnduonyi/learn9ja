@@ -1,5 +1,5 @@
 // app/terms/page.tsx
-import Header from "@/ui/home/Header";
+import Header from "@/components/home/Header";
 import Link from "next/link";
 
 export default function TermsAndConditionsPage() {
@@ -19,9 +19,9 @@ export default function TermsAndConditionsPage() {
 
           <p>Last Updated: April 18, 2025</p> {/* Update date */}
 
-          <p>
-            Welcome to <b>Learn9ja</b> (`"Platform"`, \"we\", \"our\", or \"us\"). These Terms and Conditions ("\Terms\") govern your access to and use of the Learn9ja website and services, including our live video class platform. By accessing or using the Platform, you agree to be bound by these Terms and our Privacy Policy.
-          </p>
+        <p>
+          Welcome to <b>Learn9ja</b> (&quot;Platform&quot;, &quot;we&quot;, &quot;our&quot;, or &quot;us&quot;). These Terms and Conditions (&quot;Terms&quot;) govern your access to and use of the Learn9ja website and services, including our live video class platform. By accessing or using the Platform, you agree to be bound by these Terms and our Privacy Policy.
+        </p>
 
           {/* Section: Acceptance of Terms */}
           <h2 className="text-2xl font-semibold mt-6 mb-3">1. Acceptance of Terms</h2>
@@ -64,7 +64,7 @@ export default function TermsAndConditionsPage() {
            {/* Section: Intellectual Property */}
            <h2 className="text-2xl font-semibold mt-6 mb-3">7. Intellectual Property</h2>
           <p>
-            All content on the Platform, excluding User Content, is owned by Demirite or its licensors. You may not use Platform content without permission. Users retain ownership of their own content (e.g., class materials they upload), but grant the Platform a license to use it to provide the service. [**Requires legal input** on how user content rights are handled].
+            All content on the Platform, excluding User Content, is owned by Learn9ja or its licensors. You may not use Platform content without permission. Users retain ownership of their own content (e.g., class materials they upload), but grant the Platform a license to use it to provide the service. [**Requires legal input** on how user content rights are handled].
           </p>
 
            {/* Section: Prohibited Conduct */}
@@ -83,9 +83,9 @@ export default function TermsAndConditionsPage() {
           {/* Section: Disclaimer of Warranties (Crucial Legal Section) */}
            <h2 className="text-2xl font-semibold mt-6 mb-3">10. Disclaimer of Warranties</h2>
            <p>
-             [**Requires legal input.** This section limits your liability and states that the service is provided &lquo;as is&rquo;.]
+             [**Requires legal input.** This section limits your liability and states that the service is provided &quot;as is&quot;.]
              <br/>
-             Example Placeholder: The Platform is provided on an \"AS IS\" and \"AS AVAILABLE\" basis. We make no warranties, express or implied, regarding the operation or availability of the Platform or the information, content, materials, or products included thereon.
+             Example Placeholder: The Platform is provided on an &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; basis. We make no warranties, express or implied, regarding the operation or availability of the Platform or the information, content, materials, or products included thereon.
            </p>
 
           {/* Section: Limitation of Liability (Crucial Legal Section) */}

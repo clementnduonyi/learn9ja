@@ -1,5 +1,5 @@
 // app/features/page.tsx
-import Header from "@/ui/home/Header";
+import Header from "@/components/home/Header";
 import { Card, CardHeader, CardTitle, /*CardDescription,*/ CardContent } from "@/components/ui/card";
 import Image from "next/image"; // Using Next.js Image component for visuals
 import { Video, MessageSquare, CalendarDays, User, CreditCard, History, Bell, LayoutDashboard, LifeBuoy, /*ShieldCheck*/ } from "lucide-react"; // Example icons

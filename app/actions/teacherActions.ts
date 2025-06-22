@@ -112,7 +112,7 @@ export async function updateTeacherProfile(data: TeacherProfileUpdateData): Prom
         revalidatePath('/dashboard/teacher');
         return { success: true };
 
-    } catch (error: unknown) {
+    } catch (error) {
         if (error instanceof ZodError) {
             console.error("Teacher profile update validation failed:", error.errors);
             return { success: false, error: `Invalid input: ${error.errors[0]?.message}` };
@@ -129,7 +129,7 @@ export async function updateTeacherProfile(data: TeacherProfileUpdateData): Prom
 
 
 // --- Update Teacher Payout Settings Action (Remains the same - Placeholder) ---
-interface PayoutSettingsInput { [key: string]: any; }
+interface PayoutSettingsInput { [key: string]: string | undefined; }
 export async function updateTeacherPayoutSettings(inputData: PayoutSettingsInput): Promise<ActionResult> {
     // ... (Existing placeholder logic remains the same) ...
      const supabase = await createClient();

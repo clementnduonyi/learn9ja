@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import prisma from '@/lib/prisma';
-import { Prisma, BookingStatus, Role, Subject } from '@prisma/client'; // Import necessary types/enums
+import { Prisma, BookingStatus, Role} from '@prisma/client'; // Import necessary types/enums
 import TeacherRequestList from '@/components/teacher/TeacherRequestList';
 import UpcomingBookingsList from '@/components/teacher/UpcomingBookingList';
 // Import shared types if defined elsewhere, otherwise define here

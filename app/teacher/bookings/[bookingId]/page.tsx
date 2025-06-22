@@ -18,7 +18,7 @@ export type PlainTeacherBookingWithDetails = Omit<PrismaTeacherBookingWithDetail
 // It should be placed in the `page.tsx` file of a dynamic route.
 export async function generateMetadata({ params }: { params: { bookingId: string } }) {
   try {
-    const bookingId = params.bookingId;
+    const bookingId = await params.bookingId;
 
     // Fetch minimal data needed for the title from the database.
     // Selecting only the necessary fields is more efficient.

@@ -30,7 +30,7 @@ const FeaturesSection = () => {
               <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200 mt-2">High-Quality Live Video</CardTitle>
             </CardHeader>
             <CardContent className="p-0 text-sm text-gray-600 dark:text-gray-400 text-left">
-              Crystal clear audio and video ensure you don't miss a single detail in your live sessions.
+              Crystal clear audio and video ensure you don&apos;t miss a single detail in your live sessions.
             </CardContent>
           </Card>
 

@@ -1,33 +1,57 @@
 // src/app/booking/[bookingId]/call/page.tsx
 
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import prisma from '@/lib/prisma';
 import { BookingStatus } from '@prisma/client';
-import VideoCallUI from '@/ui/video/videoUI';
-import { notFound } from 'next/navigation';
-import { BookingCallDetails } from '@/lib/types';
+import VideoCallUI from '@/components/video/VideoCallUI';
 
-interface CallPageProps {
-  params: {
-    bookingId: string;
-  };
+
+// Define the shape of the props Next.js passes to a dynamic page
+interface PageProps {
+  params: { bookingId: string };
+  searchParams?: { [key:string]: string | string[] | undefined };
 }
 
-export default async function VideoCallPage({ params }: CallPageProps /*{ params }: { params: { bookingId: string } }*/) {
-    const { bookingId } = params;
-    const supabase = await createClient();
-    // const bookingId = params.bookingId;
+// Define the "plain" data type that will be passed to the Client Component
+// This avoids passing complex types like Prisma's Decimal object.
+export interface BookingCallDetails {
+    bookingId: string;
+    subjectName: string;
+    level: string;
+    otherParticipantName: string;
+    scheduledStartTime: Date;
+    scheduledEndTime: Date | null;
+}
 
-    // 1. Get User Session
+export async function generateMetadata({ params }: { params: { bookingId: string } }) {
+  // Fetch minimal data for a dynamic title
+  try {
+      const booking = await prisma.booking.findUnique({
+          where: { id: params.bookingId },
+          select: { subject: { select: { name: true } } }
+      });
+      if (!booking) return { title: "Booking Not Found" };
+      return { title: `Video Call for ${booking.subject.name}` };
+  } catch (error) {
+      return { title: "Video Call" };
+  }
+}
+
+// Use the defined PageProps type for the component's props
+export default async function VideoCallPage({ params }: PageProps) {
+    const supabase = await createClient();
+    const bookingId = await params.bookingId;
+
+    // --- Authentication & Authorization ---
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
-        redirect(`/login?message=Please login to join the call&redirectTo=/booking/${bookingId}/call`);
+        redirect(`/login?redirectTo=/booking/${bookingId}/call`);
     }
-    const userId = user.id;
 
-    // 2. Fetch Booking Details (including related data)
+    // --- Data Fetching ---
     let bookingDetails: BookingCallDetails | null = null;
+    let fetchError: string | null = null;
     try {
         const booking = await prisma.booking.findUnique({
             where: { id: bookingId },
@@ -38,56 +62,49 @@ export default async function VideoCallPage({ params }: CallPageProps /*{ params
             },
         });
 
-        // 3. Basic Validation & Authorization
         if (!booking) {
-            notFound(); // Use Next.js notFound helper if booking doesn't exist
+            notFound();
         }
 
-        if (userId !== booking.studentUserId && userId !== booking.teacherUserId) {
-            // User is not part of this booking, forbidden
-            // You could redirect or show a specific error component
-             console.warn(`User ${userId} attempted to access booking ${bookingId} they are not part of.`);
-             redirect('/dashboard?error=Unauthorized access');
+        // Authorization check
+        if (user.id !== booking.studentUserId && user.id !== booking.teacherUserId) {
+             redirect('/dashboard?error=Unauthorized+access');
         }
 
+        // Status check
         if (booking.status !== BookingStatus.ACCEPTED) {
-            // Cannot join calls for bookings not in ACCEPTED state
-            redirect(`/dashboard?error=Session status is ${booking.status}, cannot join call.`);
+            redirect(`/dashboard?error=Session+status+is+${booking.status}%2C+cannot+join+call.`);
         }
 
-        // 4. Determine Other Participant
-        const isUserStudent = userId === booking.studentUserId;
-        const otherParticipant = isUserStudent ? booking.teacher : booking.student;
-        const otherParticipantName = otherParticipant?.name || 'Participant'; // Fallback name
+        // Prepare the "plain" data object to pass to the client
+        const isUserStudent = user.id === booking.studentUserId;
+        const otherParticipantName = (isUserStudent ? booking.teacher.name : booking.student.name) || 'Participant';
 
-        // 5. Prepare data to pass to client component
         bookingDetails = {
             bookingId: booking.id,
             subjectName: booking.subject.name,
             level: booking.level,
             otherParticipantName: otherParticipantName,
-            scheduledStartTime: booking.requestedTime, // Pass Date objects
-            scheduledEndTime: booking.endTimeUtc,     // Pass Date objects (can be null)
+            scheduledStartTime: booking.requestedTime,
+            scheduledEndTime: booking.endTimeUtc,
         };
 
     } catch (error) {
-        console.error("Error fetching booking details for call:", error);
-        // Handle error - maybe redirect or show an error message component
-        return <div className="p-4 text-red-500">Error loading booking details. Please try again later.</div>;
-        // Or use notFound() for specific Prisma errors like record not found
+        console.error("Error fetching data for call page:", error);
+        fetchError = "Could not load session details.";
     }
 
-    // Ensure bookingDetails were successfully prepared
-    if (!bookingDetails) {
-        return <div className="p-4 text-red-500">Could not load booking information.</div>;
-    }
-
-    // 6. Render Client Component with fetched details
     return (
-        // Add layout/styling as needed
-        <div className="flex flex-col md:flex-row h-screen"> {/* Example layout */}
-            {/* Pass fetched details as props */}
-            <VideoCallUI details={bookingDetails} />
+        <div className="flex flex-col md:flex-row h-screen bg-gray-100 dark:bg-gray-900">
+            {fetchError ? (
+                <div className="w-full flex items-center justify-center p-4 text-red-500">{fetchError}</div>
+            ) : bookingDetails ? (
+                // Pass the clean, serializable details object to the client component
+                <VideoCallUI details={bookingDetails} />
+            ) : (
+                 // This case would be hit if notFound() wasn't called but bookingDetails is still null
+                 <div className="w-full flex items-center justify-center p-4">Loading session details...</div>
+            )}
         </div>
     );
 }

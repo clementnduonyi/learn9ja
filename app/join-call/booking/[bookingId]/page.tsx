@@ -40,10 +40,9 @@ export async function generateMetadata({ params }: { params: { bookingId: string
 }
 
 // Use the defined PageProps type for the component's props
-export default async function VideoCallPage( { params }: PageProps ) {
+export default async function VideoCallPage( { params }: PageProps) {
     const supabase = await createClient();
-    const awaitedParams = await params;
-    const bookingId = awaitedParams.bookingId;
+    const bookingId = params.bookingId;
 
     // --- Authentication & Authorization ---
     const { data: { user }, error: userError } = await supabase.auth.getUser();

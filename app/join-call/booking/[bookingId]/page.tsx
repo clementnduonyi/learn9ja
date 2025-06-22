@@ -8,10 +8,10 @@ import VideoCallUI from '@/components/video/VideoCallUI';
 
 
 // Define the shape of the props Next.js passes to a dynamic page
-interface PageProps {
+/*interface PageProps {
   params: { bookingId: string };
   searchParams?: { [key:string]: string | string[] | undefined };
-}
+}*/
 
 // Define the "plain" data type that will be passed to the Client Component
 // This avoids passing complex types like Prisma's Decimal object.
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: { bookingId: string
 }
 
 // Use the defined PageProps type for the component's props
-export default async function VideoCallPage( { params }: PageProps) {
+export default async function VideoCallPage( { params }: { params: { bookingId: string } }) {
     const supabase = await createClient();
     const bookingId = params.bookingId;
 

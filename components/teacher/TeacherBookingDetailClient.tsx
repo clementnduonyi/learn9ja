@@ -94,7 +94,7 @@ export default function TeacherBookingDetailClient({ booking }: TeacherBookingDe
                 sessionStorage.setItem('lk_token', result.token);
                 sessionStorage.setItem('lk_room', result.roomName);
                 sessionStorage.setItem('lk_url', result.wsUrl);
-                router.push(`/booking/${booking.id}/call`);
+                router.push(`/join-call/booking/${booking.id}`);
             } else {
                 setActionError(result.error || "Failed to get join information.");
             }

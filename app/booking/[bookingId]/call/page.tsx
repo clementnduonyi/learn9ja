@@ -34,6 +34,7 @@ export async function generateMetadata({ params }: { params: { bookingId: string
       if (!booking) return { title: "Booking Not Found" };
       return { title: `Video Call for ${booking.subject.name}` };
   } catch (error) {
+    console.error("Error generating metadata for booking page:", error);
       return { title: "Video Call" };
   }
 }

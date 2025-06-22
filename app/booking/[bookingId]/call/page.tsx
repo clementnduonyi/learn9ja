@@ -8,11 +8,16 @@ import VideoCallUI from '@/ui/video/videoUI';
 import { notFound } from 'next/navigation';
 import { BookingCallDetails } from '@/lib/types';
 
+interface CallPageProps {
+  params: {
+    bookingId: string;
+  };
+}
 
-
-export default async function VideoCallPage({ params }: { params: { bookingId: string } }) {
+export default async function VideoCallPage({ params }: CallPageProps /*{ params }: { params: { bookingId: string } }*/) {
+    const { bookingId } = params;
     const supabase = await createClient();
-    const bookingId = params.bookingId;
+    // const bookingId = params.bookingId;
 
     // 1. Get User Session
     const { data: { user }, error: userError } = await supabase.auth.getUser();

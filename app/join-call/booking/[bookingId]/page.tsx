@@ -1,4 +1,4 @@
-// src/app/booking/[bookingId]/call/page.tsx
+// src/app/join-call/booking/[bookingId]/page.tsx
 
 import { redirect, notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
@@ -40,9 +40,11 @@ export async function generateMetadata({ params }: { params: { bookingId: string
 }
 
 // Use the defined PageProps type for the component's props
-export default async function VideoCallPage( { params }: { params: { bookingId: string } }) {
+export default async function VideoCallPage( { params }:  { 
+  params: Promise<{ bookingId: string }> 
+}) {
     const supabase = await createClient();
-    const bookingId = params.bookingId;
+    const { bookingId } = await params;
 
     // --- Authentication & Authorization ---
     const { data: { user }, error: userError } = await supabase.auth.getUser();

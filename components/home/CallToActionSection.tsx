@@ -14,7 +14,7 @@ const CallToActionSection = () => {
         </p>
         <div className="flex flex-col gap-4 sm:flex-row justify-center">
            <Button asChild size="lg" className="text-primary bg-primary-foreground hover:bg-primary-foreground/90">
-              <Link href="/signup">Sign Up Now - It's Free!</Link>
+              <Link href="/signup">Sign Up Now - It&apos;s Free!</Link>
            </Button>
            <Button variant="outline" size="lg" asChild className="text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10">
               <Link href="/find-teachers">Find a Teacher</Link>

@@ -1,5 +1,5 @@
 // components/FeaturesSection.tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 // Assuming you have lucide-react installed and configured with shadcn-ui
 import { Video, MessageSquare, CalendarDays, User, CreditCard, History } from "lucide-react"; // Example icons
 

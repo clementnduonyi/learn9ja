@@ -1,6 +1,6 @@
 // components/HowItWorksSection.tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import Link from "next/link";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
 // Assuming you have lucide-react installed and configured with shadcn-ui
 import { Search, CalendarDays, Video, UserPlus, BookOpen, Award } from "lucide-react"; // Example icons from lucide-react
 // Using placeholder icons for broader compatibility if lucide isn't set up yet

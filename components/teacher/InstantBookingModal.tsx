@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { getTeacherSubjects } from '@/app/actions/teacherActions';
 import { initiatePayment } from '@/app/actions/bookingActions';
 import { Button } from '../ui/button';
@@ -22,7 +22,7 @@ type SubjectData = {
 };
 
 export default function InstantBookingModal({ isOpen, onClose, teacher }: ModalProps) {
-    const router = useRouter();
+    // const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
 

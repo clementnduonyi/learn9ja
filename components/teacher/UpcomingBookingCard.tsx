@@ -2,7 +2,7 @@
 
 import React, { useState, useTransition, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; 
-import Image from 'next/image'; // Assuming you might want an avatar later
+// import Image from 'next/image'; // Assuming you might want an avatar later
 import { Button } from '@/components/ui/button'; 
 import { getJoinToken } from '@/app/actions/videoActions'; 
 import { UpcomingBookingCardProps } from '@/lib/types'

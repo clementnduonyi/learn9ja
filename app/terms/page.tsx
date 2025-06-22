@@ -32,7 +32,7 @@ export default function TermsAndConditionsPage() {
           {/* Section: Changes to Terms */}
           <h2 className="text-2xl font-semibold mt-6 mb-3">2. Changes to Terms</h2>
           <p>
-            We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. By continuing to access or use our Platform after any revisions become effective, you agree to be bound by the revised terms.
+            We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days&apos; notice prior to any new terms taking effect. By continuing to access or use our Platform after any revisions become effective, you agree to be bound by the revised terms.
           </p>
 
           {/* Section: User Accounts */}

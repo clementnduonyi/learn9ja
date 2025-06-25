@@ -8,8 +8,8 @@ import type { JsonValue } from '@prisma/client/runtime/library';
 // Assuming updatePaymentSettings action ONLY handles student logic now
 import { updatePaymentSettings } from '@/app/actions/settingsAction';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+/*import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';*/
 
 interface PaymentSettingsFormProps {
     role: Role; // Still useful to conditionally render the whole section
@@ -45,9 +45,9 @@ export default function PaymentSettingsForm({ role, initialPaymentData }: Paymen
 
          const paymentData = { /* student payment data from Stripe Elements, etc. */ };
          startTransition(async () => {
-             // const result = await updatePaymentSettings(paymentData); // Action only handles student now
-             // if (result.error) { setError(result.error); }
-             // else { setSuccess("Settings updated!"); router.refresh(); }
+             const result = await updatePaymentSettings(paymentData); // Action only handles student now
+             if (result.error) { setError(result.error); }
+             else { setSuccess("Settings updated!"); router.refresh(); }
              await new Promise(resolve => setTimeout(resolve, 500)); // Simulate action
              setSuccess("Placeholder: Student Payment Settings saved (Integration needed).");
          });
@@ -64,7 +64,7 @@ export default function PaymentSettingsForm({ role, initialPaymentData }: Paymen
                      Student Payment Method Integration (e.g., Stripe) Placeholder
                  </div>
                  {/* Display stored info if available, e.g., last 4 digits */}
-                 {/* {initialPaymentData && <p>Current Method: **** **** **** {initialPaymentData?.last4}</p>} */}
+                 {initialPaymentData && <p>Current Method: **** **** **** {initialPaymentData.toString()}</p>}
              </div>
 
 
@@ -72,9 +72,9 @@ export default function PaymentSettingsForm({ role, initialPaymentData }: Paymen
              {success && <p className="text-green-600 text-sm">{success}</p>}
 
              {/* Only show save button if there are actual fields/actions */}
-             {/* <CustomButton type="submit" disabled={isPending} className="mt-4">
+             <Button type="submit" disabled={isPending} className="mt-4">
                  {isPending ? 'Saving...' : 'Save Payment Settings'}
-             </CustomButton> */}
+             </Button>
               <p className="text-xs italic text-gray-500 mt-4">Note: Full payment integration is not yet implemented.</p>
          </form>
     );

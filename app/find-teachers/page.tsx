@@ -29,7 +29,9 @@ export default async function FindTeachersPage() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Find Homework Help, Teacher for any Subject or Skill of your Interest</h1>
+            <h1 className="text-3xl font-bold mb-6">
+                Find Homework Help, Teacher for any Subject or Skill of your Interest
+            </h1>
             <StudentSearchForm subjects={subjects} />
             {/* Results will be displayed within or below the form component */}
         </div>

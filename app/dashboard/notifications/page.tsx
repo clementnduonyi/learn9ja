@@ -4,7 +4,7 @@
     import { createClient } from '@/lib/supabase/server';
     import prisma from '@/lib/prisma';
     import { Notification } from '@prisma/client';
-    import NotificationList from '@/ui/notifications/NotificationList'; // Import client component
+    import NotificationList from '@/components/notifications/NotificationList'; // Import client component
 
     export const metadata = {
       title: 'Notifications',

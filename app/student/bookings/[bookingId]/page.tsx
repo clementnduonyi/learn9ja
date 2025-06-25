@@ -7,6 +7,13 @@ import { Prisma } from '@prisma/client';
 // Rename the imported Prisma type to avoid naming conflicts
 import { studentBookingArgs, type StudentBookingWithDetails as PrismaStudentBookingWithDetails } from '@/lib/types';
 import StudentBookingDetailClient from '@/components/student/StudentBookingDetailClient';
+import type { Metadata, ResolvingMetadata } from 'next'
+ 
+
+type Props = {
+  params: Promise<{ bookingId: string }>
+  //searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
 // Define a new "plain" type for the props that will be passed to the Client Component.
 // It replaces the 'Decimal' type with 'number'.
@@ -17,51 +24,44 @@ export type PlainStudentBookingWithDetails = Omit<PrismaStudentBookingWithDetail
 
 // This function dynamically generates metadata for a page based on its params.
 // It should be placed in the `page.tsx` file of a dynamic route.
-export async function generateMetadata({ params }: { params: { bookingId: string } }) {
-  try {
-    const bookingId = params.bookingId;
+export async function generateMetadata(
+  { params, }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+   const { bookingId } = await params
+    try { 
+          const booking = await prisma.booking.findUnique({
+          where: { id: bookingId },
+          select: {
+            subject: {
+              select: { name: true }
+            },
+            teacher: {
+              select: { name: true }
+            }
+          }
+        });
+        if (!booking) return { title: "Booking Not Found" };
 
-    // Fetch minimal data needed for the title from the database.
-    // Selecting only the necessary fields is more efficient.
-    const booking = await prisma.booking.findUnique({
-      where: { id: bookingId },
-      select: {
-        subject: {
-          select: { name: true }
-        },
-        teacher: {
-          select: { name: true }
-        }
-      }
-    });
+        const previousImages = (await parent).openGraph?.images || []
+        const title = `Session for ${booking.subject.name} class with ${booking.teacher.name}`;
 
-    // If no booking is found, you might want to handle it,
-    // though the page itself will likely throw a 404.
-    if (!booking) {
-      return {
-        title: 'Booking Not Found',
-      };
+        return { 
+            title: title,
+            description: `Details for your scheduled session for ${booking.subject.name}.`,
+            openGraph: {
+            images: ['/some-specific-page-image.jpg', ...previousImages],
+            },
+        };
+    } catch (error) {
+    console.error("Error generating metadata for booking page:", error);
+        return { title: "Booking details" };
     }
+  
+}
 
-    // Construct a dynamic and informative title.
-    const title = `Session for ${booking.subject.name} with ${booking.teacher.name}`;
-
-    return {
-      title: title,
-      description: `Details for your scheduled session for ${booking.subject.name}.` // Optional: add a dynamic description
-    };
-
-  } catch (error) {
-    console.error("Error generating metadata for booking:", error);
-    // Return a generic title if there's an error
-    return {
-      title: 'Booking Details',
-    };
-}}
-
-export default async function StudentBookingDetailPage({ params }: { params: { bookingId: string } }) {
-    const awaitedParams = await params;
-    const bookingId = awaitedParams.bookingId;
+export default async function StudentBookingDetailPage({params,}: {params: Promise<{ bookingId: string }>}) {
+    const { bookingId } = await params
     const supabase = await createClient();
 
     // --- Authentication & Authorization ---

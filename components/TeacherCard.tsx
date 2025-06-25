@@ -72,7 +72,11 @@ const handleScheduledPayment = () => {
     const specializationText = teacher.teacherProfile?.specializations?.[0] || "General Tutor";
     const displayAvatar = getDisplayAvatar(teacher.avatarUrl, teacher.gender);
 
-
+    let totalSessionPrice: number | null = null;
+    if (variant === 'searchResult' && searchCriteria?.durationMinutes && teacher.teacherProfile?.pricePerHour) {
+        const rate = parseFloat(teacher.teacherProfile.pricePerHour.toString());
+        totalSessionPrice = (rate / 60) * searchCriteria.durationMinutes;
+    }
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border ... flex flex-col">
@@ -100,13 +104,23 @@ const handleScheduledPayment = () => {
               {(teacher.teacherProfile?.averageRating ?? 0).toFixed(1)}
             </span>
           </div>
-          {teacher.teacherProfile?.pricePerHour !== null && (
-            <p className="text-indigo-600 dark:text-indigo-400 font-semibold">
-                {new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(
-                    parseFloat(teacher.teacherProfile?.pricePerHour?.toString() ?? '0')
-                )}/hr
-            </p>
-          )}
+          {/* --- Conditional Price Display --- */}
+          <div className="flex justify-between items-center mb-3 text-sm">
+              <div className="flex items-center gap-1">
+                  
+              </div>
+              {variant === 'searchResult' && totalSessionPrice !== null ? (
+                  <p className="text-indigo-600 font-semibold">
+                      Total: {new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(totalSessionPrice)}
+                  </p>
+              ) : (
+                  teacher.teacherProfile?.pricePerHour !== null && (
+                      <p className="text-indigo-600 font-semibold">
+                          {new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(parseFloat(teacher.teacherProfile?.pricePerHour?.toString() ?? '0'))}/hr
+                      </p>
+                  )
+              )}
+          </div>
         </div>
 
         {/* --- Subjects Pills --- */}
@@ -122,6 +136,7 @@ const handleScheduledPayment = () => {
             </span>
           )}
         </div>
+        
         <div className="bg-gray-50 dark:bg-gray-700/50 p-4 mt-auto">
              {variant === 'display' && (
                 <div className="grid grid-cols-2 gap-3">
@@ -159,11 +174,9 @@ const handleScheduledPayment = () => {
           <InstantBookingModal
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}
-              teacher={{ id: teacher.id, name: teacher.name || 'Teacher' }}
+              teacher={ teacher }
           />
       )}
     </div>
   );
 };
-
-

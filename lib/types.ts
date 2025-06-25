@@ -224,6 +224,18 @@ export const teacherCardArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
     gender: true,
     location: true,
     subscriptionTier: true, // <<< Crucial for button logic
+    reviewsReceived: { // <<< Fetch reviews written FOR this user
+      select: {
+          rating: true,
+          comment: true,
+          createdAt: true,
+          reviewer: { // Get the reviewer's name
+              select: { name: true, avatarUrl: true, gender: true }
+          }
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 10, // Limit to the 5 most recent reviews
+    },
     teacherProfile: {
       select: {
         // Use a main specialization or the first one as the subtitle
@@ -232,6 +244,7 @@ export const teacherCardArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
         pricePerHour: true,
         bio: true,
         availability: true,
+        acceptingInstantSessions: true,
         // We'll determine isAvailableNow separately, not from a DB field for now
       }
     },

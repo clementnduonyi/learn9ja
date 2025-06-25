@@ -2,40 +2,32 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import InstantBookingModal from './InstantBookingModal';
+import ScheduleBookingModal from './ScheduleBookingModal'
 import { SubscriptionTier } from '@prisma/client';
+import type { TeacherForCard } from '@/lib/types';
 
 interface TeacherProfileActionsProps {
-    teacher: {
-        id: string;
-        name: string | null;
-        isAvailableNow: boolean;
-        subscriptionTier: SubscriptionTier;
-    };
+    teacher: TeacherForCard;
 }
 
-export default function TeacherProfile({ teacher }: TeacherProfileActionsProps) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const router = useRouter();
+export default function TeacherProfileActions({ teacher }: TeacherProfileActionsProps) {
+    const [isInstantModalOpen, setIsInstantModalOpen] = useState(false);
+    const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
+    // Use the full teacher object for checks
     const isInstantBookingDisabled = teacher.subscriptionTier === SubscriptionTier.BASIC || !teacher.isAvailableNow;
-
-    const handleScheduleClick = () => {
-        // Redirect to find-teachers page, potentially pre-filling the teacher's name
-        router.push(`/find-teachers?teacherId=${teacher.id}`);
-    };
 
     return (
         <>
             <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                <Button onClick={handleScheduleClick} variant="outline" className="flex-1">
+                <Button onClick={() => setIsScheduleModalOpen(true)} variant="outline" className="flex-1">
                     Schedule a Class
                 </Button>
                 <Button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => setIsInstantModalOpen(true)}
                     disabled={isInstantBookingDisabled}
                     className={cn("flex-1 text-white", isInstantBookingDisabled ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700")}
                 >
@@ -48,12 +40,20 @@ export default function TeacherProfile({ teacher }: TeacherProfileActionsProps) 
                 </div>
             )}
 
-            <InstantBookingModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                teacher={{ id: teacher.id, name: teacher.name || 'Teacher' }}
+            {/* Pass the full teacher object down to the modals */}
+            <div className='m-auto w-50'>
+                <InstantBookingModal 
+                isOpen={isInstantModalOpen} 
+                onClose={() => setIsInstantModalOpen(false)} 
+                teacher={teacher} 
             />
+            <ScheduleBookingModal 
+                isOpen={isScheduleModalOpen} 
+                onClose={() => setIsScheduleModalOpen(false)} 
+                teacher={teacher} 
+            />
+            </div>
+            
         </>
     );
 }
-

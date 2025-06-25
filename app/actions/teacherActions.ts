@@ -8,6 +8,7 @@ import { Prisma, Role, TeacherStatus } from '@prisma/client'; // Import necessar
 import type { JsonValue } from '@prisma/client/runtime/library';
 import { teacherCardArgs, type TeacherForCard } from "@/lib/types"; // Import from shared types file
 import { z, ZodError } from 'zod'; // Import Zod
+import { isTeacherAvailable } from "@/lib/scheduling";
 
 // --- ActionResult Interface ---
 interface ActionResult {
@@ -178,29 +179,37 @@ export async function getFeaturedTeachers(): Promise<TeacherForCard[]> {
       take: 6, // Limit to 6 for a homepage feature
     });
 
-    // Separately fetch subject names for each teacher
-    // This approach (N+1 query) is acceptable for a small number of featured teachers.
-    // For larger queries, consider optimizing with a more advanced Prisma query.
-    const teachersWithSubjects = await Promise.all(
+
+    const teachersWithSubjectsAndStatus = await Promise.all(
       approvedTeachers.map(async (teacher) => {
-        const subjectsTaught = await prisma.teacherSubject.findMany({
+        const subjectsTaught = await prisma.teacherSubject.findMany(
+          {
           where: { teacherUserId: teacher.id },
           include: { subject: { select: { name: true } } },
         });
 
-        // Determine if teacher is available now (placeholder logic)
-        // TODO: Replace with real-time presence check (e.g., Supabase Presence, Redis, etc.)
-        const isAvailableNow = Math.random() > 0.5; // 50% chance of being available for demo
+        // --- CORRECTED: Real-time Availability Logic ---
+        let isAvailableNow = false;
+        // Check if the teacher profile exists, has the instant session toggle on, and has availability set
+        if (teacher.teacherProfile && teacher.teacherProfile.acceptingInstantSessions && teacher.teacherProfile.availability) {
+          // Use the centralized helper to check if the current UTC time falls within any slot
+          isAvailableNow = isTeacherAvailable(
+            teacher.teacherProfile.availability,
+            new Date(), // Current time in UTC
+            60 // Assuming a default 60-min instant session
+          );
+        }
+        // --- END CORRECTION ---
 
         return {
-          ...teacher, // Spread the data fetched with teacherCardArgs
-          subjects: subjectsTaught.map(ts => ts.subject.name), // Add subject names array
-          isAvailableNow, // Add availability status
+          ...teacher,
+          subjects: subjectsTaught.map(ts => ts.subject.name),
+          isAvailableNow, // Pass the correctly calculated boolean
         };
       })
     );
 
-    return teachersWithSubjects;
+    return teachersWithSubjectsAndStatus;
 
   } catch (error) {
     console.error("Failed to fetch featured teachers:", error);

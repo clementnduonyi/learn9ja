@@ -1,21 +1,36 @@
 
-import { Calendar, Clock, User } from "lucide-react";
+import { Clock, CreditCard, MessageSquare, UserCheck, Video } from "lucide-react";
 
 const features = [
   {
-    icon: <User className="h-8 w-8 text-learn9ja" />,
-    title: "Expert Nigerian Teachers",
-    description: "Connect with qualified Nigerian teachers specialized in various subjects and educational levels."
+    icon: <Video className="h-8 w-8 text-learn9ja" />,
+    title: "Live video",
+    description: "Crystal clear audio and video ensure you don&apos;t miss a single detail in your live sessions..."
   },
   {
     icon: <Clock className="h-8 w-8 text-learn9ja" />,
     title: "Instant or Scheduled Classes",
-    description: "Get help immediately with instant classes or schedule sessions for a time that works for you."
+    description: "Get help immediately with instant classes or schedule sessions for any time that works for you."
   },
   {
-    icon: <Calendar className="h-8 w-8 text-learn9ja" />,
-    title: "Premium Recording Access",
+    icon: <MessageSquare className="h-8 w-8 text-learn9ja" />,
+    title: "Interactive Tools",
     description: "Subscribe to premium and access recordings of your classes for review at any time."
+  },
+  {
+    icon: <UserCheck className="h-8 w-8 text-learn9ja" />,
+    title: "Vetted Teachers",
+    description: "Explore comprehensive profiles of thoroughly vetted teacher with security checks, expertise, reviews, and teaching styles."
+  },
+  {
+    icon: <CreditCard className="h-8 w-8 text-learn9ja" />,
+    title: "Secure Payments",
+    description: "We partner Paystack payment for seamless and secure payment processing."
+  },
+  {
+    icon: <CreditCard className="h-8 w-8 text-learn9ja" />,
+    title: "Session Replays",
+    description: "Review your live sessions with a replay available for up to 1 hour post-session."
   }
 ];
 
@@ -28,7 +43,7 @@ const FeaturesSection = () => {
             Why Choose <span className="text-learn9ja">Learn9ja</span>?
           </h2>
           <p className="mt-4 text-lg text-gray-600">
-            Our platform provides the perfect environment for effective online learning tailored for Nigerians.
+            Explore the powerful features that make learning and teaching on Learn9ja a breeze and rewarding.
           </p>
         </div>
 

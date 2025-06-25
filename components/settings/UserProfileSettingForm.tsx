@@ -8,7 +8,6 @@ import type { UserSettingsData } from '@/lib/types'; // Adjust path if type move
 import { updateUserProfileSettings } from '@/app/actions/settingsAction';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'; // Assuming shadcn/ui
@@ -26,6 +25,12 @@ const timezones = [
     "America/Los_Angeles", // (UTC-8 / UTC-7 DST)
 ];
 
+interface Address {
+  street?: string;
+  city?: string;
+  country?: string;
+}
+
 interface UserProfileSettingsFormProps {
     // Ensure UserSettingsData includes gender from the parent page fetch
     initialData: Pick<UserSettingsData, 'name' | 'email' | 'dob' | 'phone' | 'address' | 'avatarUrl' | 'gender' | 'timezone'>;
@@ -37,7 +42,9 @@ const formatDateForInput = (date: Date | null | undefined): string => {
     try {
         const dateObj = typeof date === 'string' ? new Date(date) : date;
         return dateObj.toISOString().split('T')[0];
-    } catch (e) { console.error("Error formatting date:", e); return ''; }
+    } catch (e) { 
+        console.error("Error formatting date:", e); return ''; 
+    }
 };
 
 export default function UserProfileSettingsForm({ initialData }: UserProfileSettingsFormProps) {
@@ -53,9 +60,9 @@ export default function UserProfileSettingsForm({ initialData }: UserProfileSett
     const [timezone, setTimezone] = useState(initialData.timezone ?? ''); // <<< Add timezone state
     const [gender, setGender] = useState<Gender | null>(initialData.gender ?? null); // <<< Add gender state, initialize with null if no initial value
     // ... address state ...
-    const [addressStreet, setAddressStreet] = useState((initialData.address as any)?.street ?? '');
-    const [addressCity, setAddressCity] = useState((initialData.address as any)?.city ?? '');
-    const [addressCountry, setAddressCountry] = useState((initialData.address as any)?.country ?? '');
+    const [addressStreet, setAddressStreet] = useState((initialData.address as Address)?.street ?? '');
+    const [addressCity, setAddressCity] = useState((initialData.address as Address)?.city ?? '');
+    const [addressCountry, setAddressCountry] = useState((initialData.address as Address)?.country ?? '');
     // TODO: Add state for avatarUrl if implementing upload
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

@@ -5,7 +5,7 @@ import Image from "next/image"
 
 const HeroSection = () => {
   return (
-    <section className="pt-20 pb-12 md:pt-28 md:pb-20 hero-gradient">
+    <section className="pt-16 pb-12 md:pt-20 md:pb-20 hero-gradient">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
           <div className="flex-1 text-center lg:text-left">

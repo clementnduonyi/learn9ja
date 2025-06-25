@@ -31,7 +31,7 @@ const initiatePaymentSchema = z.object({
   durationMinutes: z.number().int().min(30).max(180), // Example: duration must be 30-180 mins
 });
 
-export interface VerifiedBookingRequestData { paystackReference: string; }
+export interface VerifiedBookingRequestData { paystackReference: string, }
 
 export async function initiatePayment(requestData: InitiatePaymentData): Promise<ActionResult> {
   const supabase = await createClient();
@@ -176,7 +176,8 @@ export async function verifyPaymentAndCreateBooking(
         console.log(`Notification created for teacher ${teacherUserId}`);
 
         return createdBooking;
-    });
+    },{timeout: 15000} // <<< Set timeout to 15 seconds (15000 ms)
+  );
 
     // 5. Optional: Send Email Notification
     // ...
@@ -284,7 +285,7 @@ export async function completeBooking(bookingId: string): Promise<ActionResult> 
         const otherParticipantId = userId === booking.studentUserId ? booking.teacherUserId : booking.studentUserId;
         try {
           const subjectName = booking.subject.name;
-          await prisma.notification.create({ data: { userId: otherParticipantId, message: `Your session for ${subjectName} was marked complete.`, link: `/bookings/${bookingId}` } });
+          await prisma.notification.create({ data: { userId: otherParticipantId, message: `Your session for ${subjectName} was marked complete.`, link: `/student/bookings/${bookingId}` } });
         } catch (notifError){ console.error("Notify complete error:", notifError); }
 
 
@@ -345,7 +346,8 @@ export async function requestReschedule(bookingId: string, reason?: string): Pro
             await tx.notification.create({
                 data: { userId: booking.teacherUserId, message: message, link: `/teacher/bookings/${bookingId}` }
             });
-        });
+        },  { timeout: 15000 }, // <<< Set timeout to 15 seconds (15000 ms));
+      )
 
         revalidatePath('/dashboard/student');
         revalidatePath('/dashboard/teacher');
@@ -372,47 +374,56 @@ export async function acknowledgeRescheduleRequest(bookingId: string): Promise<A
     if (authError || !user) return { success: false, error: 'Unauthorized' };
 
     const teacherUserId = user.id;
-    if (!bookingId) return { success: false, error: 'Booking ID required.' };
 
     try {
         await prisma.$transaction(async (tx) => {
             const booking = await tx.booking.findUnique({
                 where: { id: bookingId },
-                select: { status: true, teacherUserId: true, studentUserId: true, subject: { select: { name: true } }, level: true }
+                select: { 
+                   status: true, 
+                   teacherUserId: true, 
+                   studentUserId: true, 
+                   subject: { 
+                    select: { name: true } }, 
+                    level: true
+                 }
             });
 
-            if (!booking) throw new Error("Booking not found.");
-            if (booking.teacherUserId !== teacherUserId) throw new Error("Forbidden: Not your booking.");
-            if (booking.status !== BookingStatus.RESCHEDULE_REQUESTED) throw new Error(`Cannot acknowledge: Booking status is ${booking.status}.`);
+            if (!booking || booking.teacherUserId !== teacherUserId || booking.status !== 'RESCHEDULE_REQUESTED') {
+                 throw new Error("Validation failed for acknowledging reschedule.");
+            }
 
-            // Set status to CANCELLED, freeing up the slot officially.
+            // Update booking to CANCELLED to free up the slot
             await tx.booking.update({
                 where: { id: bookingId },
-                data: { status: BookingStatus.CANCELLED }
+                data: { status: 'CANCELLED' }
             });
 
-            // Notify Student
+            // --- NEW: Update Notification Logic ---
             const teacherName = user.user_metadata?.full_name || 'The teacher';
-            const message = `${teacherName} has acknowledged your reschedule request for the ${booking.subject?.name} (${booking.level}) session. Please feel free to book a new time.`;
+            const message = `${teacherName} has acknowledged your reschedule request. Please feel free to book a new time.`;
+            // Link directly to the teacher's profile page
+            const link = `/profile/teacher/${teacherUserId}`;
+
             await tx.notification.create({
-                data: { userId: booking.studentUserId, message: message, link: `/find-teachers` }
+                data: {
+                    userId: booking.studentUserId,
+                    message: message,
+                    link: link // <<< Updated link
+                }
             });
         });
 
-        revalidatePath('/dashboard/student');
         revalidatePath('/dashboard/teacher');
+        revalidatePath('/dashboard/student');
         return { success: true };
 
     } catch (error: unknown) {
-         console.error(`Error acknowledging request for session reschedule ${bookingId}:`, error);
-      // Check if the error is an instance of Error to safely access its message property
       if (error instanceof Error) {
           return { success: false, error: error.message || 'Failed to acknowledge request.' };
       }
-
       // Fallback for non-Error types
       return { success: false, error: 'An unknown error occurred while acknowledging request. Try agaian later!' };
-      
     }
 }
 
@@ -482,7 +493,9 @@ export async function cancelBooking(bookingId: string): Promise<ActionResult> {
                 });
             } catch (notifError) { console.error("Cancel Notify Error:", notifError); }
 
-        }); // End transaction
+        }, { timeout: 15000, } // <<< Set timeout to 15 seconds (15000 ms); 
+        
+      )// End transaction
 
         // Revalidate relevant paths
         revalidatePath('/dashboard/student');

@@ -1,20 +1,18 @@
 // src/app/join-call/booking/[bookingId]/page.tsx
-
+//import type { Metadata } from 'next';
 import { redirect, notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import prisma from '@/lib/prisma';
 import { BookingStatus } from '@prisma/client';
 import VideoCallUI from '@/components/video/VideoCallUI';
+import type { Metadata, ResolvingMetadata } from 'next'
+ 
+type Props = {
+  params: Promise<{ bookingId: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
 
-// Define the shape of the props Next.js passes to a dynamic page
-/*interface PageProps {
-  params: { bookingId: string };
-  searchParams?: { [key:string]: string | string[] | undefined };
-}*/
-
-// Define the "plain" data type that will be passed to the Client Component
-// This avoids passing complex types like Prisma's Decimal object.
 export interface BookingCallDetails {
     bookingId: string;
     subjectName: string;
@@ -23,26 +21,38 @@ export interface BookingCallDetails {
     scheduledStartTime: Date;
     scheduledEndTime: Date | null;
 }
+ 
+export async function generateMetadata(
+  { params, }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+   const { bookingId } = await params
+    try { 
+        const booking = await prisma.booking.findUnique({
+            where: { id: bookingId },
+            select: { subject: { select: { name: true } } }
+        });
+        if (!booking) return { title: "Booking Not Found" };
 
-export async function generateMetadata({ params }: { params: { bookingId: string } }) {
-  // Fetch minimal data for a dynamic title
-  try {
-      const booking = await prisma.booking.findUnique({
-          where: { id: params.bookingId },
-          select: { subject: { select: { name: true } } }
-      });
-      if (!booking) return { title: "Booking Not Found" };
-      return { title: `Video Call for ${booking.subject.name}` };
-  } catch (error) {
+        const previousImages = (await parent).openGraph?.images || []
+
+        return { 
+            title: `Video Call for ${booking.subject.name}`,
+            
+            openGraph: {
+            images: ['/some-specific-page-image.jpg', ...previousImages],
+            },
+        };
+    } catch (error) {
     console.error("Error generating metadata for booking page:", error);
-      return { title: "Video Call" };
-  }
+        return { title: "Video Call" };
+    }
+  
 }
 
+
 // Use the defined PageProps type for the component's props
-export default async function VideoCallPage( { params }:  { 
-  params: Promise<{ bookingId: string }> 
-}) {
+export default async function VideoCallPage( { params, }: Props) {
     const supabase = await createClient();
     const { bookingId } = await params;
 

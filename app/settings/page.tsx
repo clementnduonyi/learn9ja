@@ -3,8 +3,8 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import prisma from '@/lib/prisma';
-import UserProfileSettingsForm from '@/ui/settings/UserProfileSettingForm';
-import PaymentSettingsForm from '@/ui/settings/PaymentSettingsForm';
+import UserProfileSettingsForm from '@/components/settings/UserProfileSettingForm';
+import PaymentSettingsForm from '@/components/settings/PaymentSettingsForm';
 import { UserSettingsData, userSettingsArgs } from '@/lib/types';
 
 

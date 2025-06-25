@@ -25,12 +25,11 @@ export default async function HomePage() {
               <h2 className="text-3xl md:text-4xl font-bold text-learn9ja-dark">
                 Featured <span className="text-learn9ja-green">Teachers</span>
               </h2>
-              <p className="mt-4 text-lg text-gray-600">
-                Meet some of our top-rated Nigerian teachers ready to help you excel.
+              <p className="my-3 text-lg text-gray-600">
+                Meet some of our top-rated and vetted teachers of the week.
               </p>
             </div>
-            
-            {/*<div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">*/}
+      
             {featuredTeachers.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* 5. Map over the fetched data and pass it to the TeacherCard component */}

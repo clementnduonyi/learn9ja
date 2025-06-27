@@ -42,7 +42,7 @@ export default async function Navbar() {
   return (
     <nav className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-md sticky top-0 z-50"> {/* Made sticky */}
       <div className="container flex h-14 items-center justify-between px-4 md:px-6"> {/* Adjusted padding */}
-        <Link href="/" className="text-xl text-learn9ja font-bold hover:text-green-400 dark:hover:text-indigo-400">
+        <Link href="/" className="text-xl text-learn9ja font-bold hover:text-learn9ja-400 dark:hover:text-learn9ja-400">
          Learn9ja
         </Link>
         <NavigationMenu className="hidden md:flex">

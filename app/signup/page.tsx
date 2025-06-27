@@ -15,7 +15,8 @@ export default function SignUpPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Placeholder for a logo */}
         <Link href="/" className="flex justify-center">
-            <svg className="h-12 w-auto text-indigo-600" viewBox="0 0 24 24" fill="currentColor">
+            <svg className="h-12 w-auto text-learn9ja
+            -600" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5-10-5-10 5z" />
             </svg>
         </Link>

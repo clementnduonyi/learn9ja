@@ -14,7 +14,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="flex-grow mt-16">
+      <main className="">
         <HeroSection />
         
         <FeaturesSection />
@@ -23,7 +23,7 @@ export default async function HomePage() {
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-learn9ja-dark">
-                Featured <span className="text-learn9ja-green">Teachers</span>
+                Featured <span className="text-learn9ja">Teachers</span>
               </h2>
               <p className="my-3 text-lg text-gray-600">
                 Meet some of our top-rated and vetted teachers of the week.
@@ -44,7 +44,7 @@ export default async function HomePage() {
               )}
             </div>
             
-            <div className="mt-12 text-center">
+            <div className="mt-10 mx-auto text-center w-50">
               <a href="/signup" className="btn-primary inline-flex px-8">
                 View All Teachers
               </a>

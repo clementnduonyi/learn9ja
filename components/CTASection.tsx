@@ -11,17 +11,16 @@ const CTASection = () => {
             Ready to transform your learning experience?
           </h2>
           <p className="mt-6 text-lg text-gray-600">
-            Join Learn9ja today to connect with expert Nigerian teachers or share your knowledge
-            by becoming a teacher on our platform.
+            Join Learn9ja today and connect with expert teachers worldwide or share your knowledge.
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up" style={{animationDelay: '0.4s'}}>
             <Link href="/signup">
-              <Button className="btn-primary px-8 py-6 text-base">
-                Sign Up as a Student
+              <Button className="bg-learn9ja w-full sm:w-auto text-base text-learn9ja-white py-6 px-8">
+                Sign up as a student
               </Button>
             </Link>
             <Link href="/signup">
-              <Button variant="outline" className="btn-secondary px-8 py-6 text-base">
+              <Button variant="outline" className="bg-learn9ja-white text-learn9ja w-full sm:w-auto text-base py-6 px-8">
                 Become a Teacher
               </Button>
             </Link>

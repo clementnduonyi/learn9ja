@@ -15,9 +15,11 @@ const BenefitsSection = () => {
   return (
     <section className="w-full py-12 md:py-20 lg:py-24"> {/* Background removed here, can add if needed */}
       <div className="container px-4 md:px-6 text-center">
-        <h2 className="text-3xl font-bold tracking-tighter md:text-4xl lg:text-5xl">Why Choose Learn9ja?</h2>
+        <h2 className="text-3xl font-bold tracking-tighter md:text-4xl lg:text-5xl">
+          Learn with<span className="text-learn9ja"> Learn9ja</span>
+        </h2>
         <p className="max-w-[900px] mx-auto mt-4 text-gray-600 md:text-xl dark:text-gray-400">
-          Experience the best in live online learning and teaching with these key advantages:
+          Experience the best in live online learning and teaching...
         </p>
 
         {/* Grid for Benefit Cards - Explicitly 4 columns on large screens */}

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image"
 
+
+
 const HeroSection = () => {
   return (
     <section className="pt-16 pb-12 md:pt-20 md:pb-20 hero-gradient">
@@ -14,7 +16,7 @@ const HeroSection = () => {
               <span className="text-learn9ja">One Click Away</span>
             </h1>
             <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto lg:mx-0 animate-slide-up" style={{animationDelay: '0.2s'}}>
-            Seamless video classes connecting students and teachers worldwide. Experience dynamic, real-time learning from the comfort of your home.
+            Seamless video classes connecting students and teachers worldwide. Experience dynamic, real-time learning from the comfort of your home. Find instant help or schedule sessions for any subject, at any level.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-up" style={{animationDelay: '0.4s'}}>
               <Link href="/signup">

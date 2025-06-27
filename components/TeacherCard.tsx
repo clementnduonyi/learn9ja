@@ -79,20 +79,28 @@ const handleScheduledPayment = () => {
     }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border ... flex flex-col">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden card-hover">
+       <div className="relative">
+          {teacher.isAvailableNow && (
+            <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+              Available Now
+            </div>
+            
+          )}
+        </div>
         <div className="p-5 flex-grow">
             {/* ... Teacher info, rating, price, subjects - same as before ... */}
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-4">
           <Image
             src={displayAvatar}
             alt={`${teacher.name}'s profile`}
             width={64} height={64}
-            className="w-16 h-16 rounded-full object-cover border-2 border-indigo-400"
+            className="w-16 h-16 rounded-full object-cover border-2 border-learn9ja"
             onError={(e) => { e.currentTarget.src = '/avatars/default-other.svg'; }}
           />
           <div>
-            <h3 className="font-semibold text-lg text-gray-900 dark:text-white">{teacher.name}</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{specializationText}</p>
+            <h3 className="font-semibold text-lg text-learn9ja-dark">{teacher.name}</h3>
+            <p className="text-sm text-gray-500">{specializationText}</p>
           </div>
         </div>
 
@@ -100,22 +108,19 @@ const handleScheduledPayment = () => {
         <div className="flex justify-between items-center mb-3 text-sm">
           <div className="flex items-center gap-1">
             <StarRating rating={teacher.teacherProfile?.averageRating ?? 0} readOnly={true} size="text-base" color="text-yellow-500" />
-            <span className="text-gray-600 dark:text-gray-300 font-medium">
+            <span className="text-gray-600 font-medium">
               {(teacher.teacherProfile?.averageRating ?? 0).toFixed(1)}
             </span>
           </div>
           {/* --- Conditional Price Display --- */}
-          <div className="flex justify-between items-center mb-3 text-sm">
-              <div className="flex items-center gap-1">
-                  
-              </div>
+          <div>
               {variant === 'searchResult' && totalSessionPrice !== null ? (
-                  <p className="text-indigo-600 font-semibold">
+                  <p className="text-learn9ja font-semibold">
                       Total: {new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(totalSessionPrice)}
                   </p>
               ) : (
                   teacher.teacherProfile?.pricePerHour !== null && (
-                      <p className="text-indigo-600 font-semibold">
+                      <p className="text-learn9ja font-semibold">
                           {new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(parseFloat(teacher.teacherProfile?.pricePerHour?.toString() ?? '0'))}/hr
                       </p>
                   )
@@ -126,27 +131,27 @@ const handleScheduledPayment = () => {
         {/* --- Subjects Pills --- */}
         <div className="my-3 flex flex-wrap gap-2">
           {teacher.subjects.slice(0, 3).map((subject) => (
-            <span key={subject} className="text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200 rounded-full px-2.5 py-1">
+            <span key={subject} className="text-xs font-medium bg-learn9ja/10 text-learn9ja rounded-full px-2.5 py-1">
               {subject}
             </span>
           ))}
           {teacher.subjects.length > 3 && (
-            <span className="text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-full px-2.5 py-1">
+            <span className="text-xs font-medium bg-gray-100 text-gray-600 rounded-full px-2.5 py-1">
               +{teacher.subjects.length - 3} more
             </span>
           )}
         </div>
         
-        <div className="bg-gray-50 dark:bg-gray-700/50 p-4 mt-auto">
+        <div className="mt-5">
              {variant === 'display' && (
-                <div className="grid grid-cols-2 gap-3">
-                    <Link href={`/profile/teacher/${teacher.id}`} passHref>
+                <div className="grid grid-cols-2 gap-3 m-auto">
+                    <Link href={`/profile/teacher/${teacher.id}`}>
                         <Button variant="outline" className="w-full">View Profile</Button>
                     </Link>
                     <Button
                         onClick={() => setIsModalOpen(true)}
                         disabled={isInstantBookingDisabled || isActionPending}
-                        className={cn("w-full text-white", isInstantBookingDisabled ? "bg-gray-300 ..." : "bg-green-600 ...")}
+                        className={cn("w-full text-white hover:bg-learn9ja/90", isInstantBookingDisabled ? "bg-gray-300" : "bg-learn9ja")}
                         title={isInstantBookingDisabled ? "Instant booking unavailable" : "Book an immediate session"}
                     >
                         Book Instant
@@ -158,7 +163,7 @@ const handleScheduledPayment = () => {
                 <Button
                     onClick={handleScheduledPayment}
                     disabled={isActionPending}
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+                    className="w-full bg-learn9ja  hover:bg-learn9ja/90 text-white"
                 >
                     {isActionPending ? 'Redirecting...' : 'Pay & Book This Slot'}
                 </Button>

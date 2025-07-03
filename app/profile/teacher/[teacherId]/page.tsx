@@ -247,21 +247,21 @@ export default async function TeacherPublicProfilePage({ params }:  { params: Pr
         };
 
         return (
-            <div className="bg-gray-50 dark:bg-gray-900">
+            <div className="bg-gray-50">
                 <div className="container mx-auto px-4 py-12">
-                    <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+                    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
                         {/* Header */}
                         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
                             <Image
                                 src={getDisplayAvatar(teacherData.avatarUrl, teacherData.gender)}
                                 alt={teacherData.name || 'Teacher Profile'}
                                 width={128} height={128}
-                                className="w-32 h-32 rounded-full border-4 border-indigo-500 object-cover"
+                                className="w-32 h-32 rounded-full border-4 border-learn9ja object-cover"
                             />
                             <div className="flex-1 text-center sm:text-left">
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{teacherData.name}</h1>
+                                <h1 className="text-3xl font-bold text-gray-900">{teacherData.name}</h1>
                                 {teacherData.teacherProfile.specializations[0] && (
-                                    <p className="text-lg text-indigo-600 dark:text-indigo-400">{teacherData.teacherProfile.specializations[0]}</p>
+                                    <p className="text-lg text-learn9ja/50">{teacherData.teacherProfile.specializations[0]}</p>
                                 )}
                                  {teacherData.teacherProfile.averageRating && <div className="mt-2 flex items-center justify-center sm:justify-start gap-2">
                                     <StarRating rating={teacherData.teacherProfile.averageRating} readOnly={true} />
@@ -269,9 +269,9 @@ export default async function TeacherPublicProfilePage({ params }:  { params: Pr
                                 </div>}
                             </div>
                             <div className="flex-shrink-0">
-                                {teacherData.teacherProfile.pricePerHour && <p className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                                {teacherData.teacherProfile.pricePerHour && <p className="text-2xl font-bold text-learn9ja">
                                     {new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(parseFloat(teacherData.teacherProfile.pricePerHour.toString()))}
-                                    <span className="text-base font-normal text-gray-500">/hr</span>
+                                    <span className="text-base font-normal text-learn9ja">/hr</span>
                                 </p>}
                             </div>
                         </div>
@@ -284,7 +284,7 @@ export default async function TeacherPublicProfilePage({ params }:  { params: Pr
                            {/* About Me */}
                         <div>
                             <h3 className="text-lg font-semibold">About Me</h3>
-                            <p className="mt-2 text-gray-600 dark:text-gray-300 whitespace-pre-wrap">{teacherData.teacherProfile.bio || "No bio available."}</p>
+                            <p className="mt-2 text-gray-600 whitespace-pre-wrap">{teacherData.teacherProfile.bio || "No bio available."}</p>
                         </div>
                          {/* Subjects & Levels */}
                          <div>
@@ -293,7 +293,7 @@ export default async function TeacherPublicProfilePage({ params }:  { params: Pr
                                 {teacherSubjects.length > 0 ? teacherSubjects.map(s => (
                                     <div key={s.subjectId}>
                                         <span className="font-medium">{s.subjectName}:</span>
-                                        <span className="ml-2 text-gray-600 dark:text-gray-300">{s.levels.join(', ')}</span>
+                                        <span className="ml-2 text-gray-600">{s.levels.join(', ')}</span>
                                     </div>
                                 )) : <p className="text-gray-500 italic">No subjects listed.</p>}
                             </div>

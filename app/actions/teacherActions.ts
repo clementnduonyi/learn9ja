@@ -4,7 +4,7 @@
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import prisma from '@/lib/prisma';
-import { Prisma, Role, TeacherStatus } from '@prisma/client'; // Import necessary types
+import { Prisma, Role, SubscriptionTier, TeacherStatus } from '@prisma/client'; // Import necessary types
 import type { JsonValue } from '@prisma/client/runtime/library';
 import { teacherCardArgs, type TeacherForCard } from "@/lib/types"; // Import from shared types file
 import { z, ZodError } from 'zod'; // Import Zod
@@ -31,6 +31,7 @@ interface TeacherProfileUpdateData {
     subjects?: TeacherSubjectLevelInput[];
     pricePerHour?: number | null;
     specializations?: string[];
+    acceptingInstantSessions?: boolean;
 }
 
 // Zod schema for validation
@@ -43,6 +44,7 @@ const teacherProfileUpdateSchema = z.object({
     })).optional(),
     pricePerHour: z.number().positive("Price must be positive").nullable().optional(),
     specializations: z.array(z.string().min(1, "Specialization cannot be empty").max(100, "Specialization too long")).optional(),
+    acceptingInstantSessions: z.boolean().optional(),
 });
 
 
@@ -74,6 +76,7 @@ export async function updateTeacherProfile(data: TeacherProfileUpdateData): Prom
                     availability: validatedData.availability,
                     pricePerHour: priceValue,
                     specializations: validatedData.specializations,
+                    acceptingInstantSessions: validatedData.acceptingInstantSessions, 
                 },
             });
             console.log(`Updated base profile for teacher ${userId}`);
@@ -188,10 +191,16 @@ export async function getFeaturedTeachers(): Promise<TeacherForCard[]> {
           include: { subject: { select: { name: true } } },
         });
 
+       
+        
         // --- CORRECTED: Real-time Availability Logic ---
         let isAvailableNow = false;
-        // Check if the teacher profile exists, has the instant session toggle on, and has availability set
-        if (teacher.teacherProfile && teacher.teacherProfile.acceptingInstantSessions && teacher.teacherProfile.availability) {
+        // Check all three conditions explicitly
+        if (
+            teacher.subscriptionTier !== SubscriptionTier.BASIC &&
+            teacher.teacherProfile?.acceptingInstantSessions === true &&
+            teacher.teacherProfile?.availability
+        ) {
           // Use the centralized helper to check if the current UTC time falls within any slot
           isAvailableNow = isTeacherAvailable(
             teacher.teacherProfile.availability,

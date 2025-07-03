@@ -64,6 +64,7 @@ model User {
   phone         String?   @unique
   address       Json?
   paymentMethodDetails Json? @map("payment_method_details")
+  creditBalance   Decimal  @default(0) @db.Decimal(10, 2)
   languages     String[]  @default([])
   location      String?
   subscriptionTier SubscriptionTier @default(BASIC)
@@ -136,6 +137,7 @@ model Booking {
   durationMinutes Int           @default(60) @map("duration_minutes")
   status          BookingStatus @default(PENDING)
   calculatedPrice Decimal?      @map("calculated_price") @db.Decimal(10, 2)
+  reminderSent    Boolean @default(false) 
   videoRoomId     String?       @map("video_room_id")
   videoRoomUrl    String?       @map("video_room_url")
   createdAt       DateTime      @default(now()) @map("created_at")

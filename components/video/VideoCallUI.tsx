@@ -5,7 +5,7 @@ import '@livekit/components-styles';
 import {
   LiveKitRoom,
   VideoConference,
-  ControlBar, // If needed for custom layout
+ // ControlBar, // If needed for custom layout
 } from '@livekit/components-react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -102,7 +102,7 @@ export default function VideoCallUI({ details }: VideoCallUIProps) {
                         {/* Pre-built VideoConference UI */}
                         <VideoConference />
                         {/* Custom Controls can be added via ControlBar */}
-                        <ControlBar controls={{ microphone: true, camera: true, screenShare: true, leave: true }} /> 
+                        {/*<ControlBar controls={{ microphone: true, camera: true, screenShare: true, leave: true }} /> */}
                     </LiveKitRoom>
                 </div>
             </div>

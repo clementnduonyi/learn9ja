@@ -9,6 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input'; // Import Input
+import { Switch } from '@/components/ui/switch';
+import { FaCheck } from 'react-icons/fa'
+import { RxCross2 } from 'react-icons/rx'
 // Import actions
 import { updateTeacherProfile, /*updateTeacherPayoutSettings*/ } from '@/app/actions/teacherActions'; // Adjust paths
 
@@ -87,9 +90,6 @@ export default function TeacherProfileForm({
 }: TeacherProfileFormProps) {
   const router = useRouter();
   const [isProfilePending, startProfileTransition] = useTransition();
-  // const [isPayoutPending, startPayoutTransition] = useTransition();
-
-  // --- State ---
   const [bio, setBio] = useState(initialProfile?.bio ?? '');
   const [currentAvailability, setCurrentAvailability] = useState<WeeklyAvailability>(
     parseAvailabilityJson(initialProfile?.availability)
@@ -99,9 +99,10 @@ export default function TeacherProfileForm({
       initialProfile?.subjectsTaught?.forEach(st => { initialMap[st.subjectId] = st.levels ?? []; });
       return initialMap;
   });
-  // <<< NEW State for Price and Specializations >>>
+  
   const [pricePerHour, setPricePerHour] = useState<string>(initialProfile?.pricePerHour?.toString() ?? ''); // Store as string for input
   const [specializations, setSpecializations] = useState<string>((initialProfile?.specializations ?? []).join(', ')); // Store as comma-separated string
+  const [acceptingInstant, setAcceptingInstant] = useState<boolean>(initialProfile?.acceptingInstantSessions ?? false);
 
   // Error/Success states remain the same
   const [profileError, setProfileError] = useState<string | null>(null);
@@ -138,6 +139,7 @@ export default function TeacherProfileForm({
     const dataToUpdate = {
       bio: bio,
       availability: formattedAvailability,
+      acceptingInstantSessions: acceptingInstant,
       subjects: subjectsData,
       pricePerHour: parsedPrice, // Pass parsed number or null
       specializations: specializationsArray, // Pass array of strings
@@ -158,6 +160,29 @@ export default function TeacherProfileForm({
         {/* Form Section 1: Profile Details */}
         <form onSubmit={handleProfileSubmit} className="space-y-8">
             <h3 className="text-xl font-semibold border-b pb-2">Profile Details, Rate & Availability</h3>
+            <div className="flex items-center justify-between rounded-lg bg-red border p-4">
+              <div className="space-y-0.5">
+                  <Label htmlFor="instant-sessions" className="text-base font-medium">Accept Instant Sessions</Label>
+                  <p className="text-sm text-gray-500">
+                      Allow students on paid plans to book an immediate session with you if you&apos;re available.
+                  </p>
+              </div>
+              
+                <Switch
+                  id="instant-sessions"
+                  checked={acceptingInstant}
+                  onCheckedChange={setAcceptingInstant}
+                  aria-label="Toggle instant session availability"
+                  className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-gray-400"
+                />
+               <label htmlFor="instant-sessions">
+                  {acceptingInstant ? <FaCheck /> : <RxCross2  />}
+              </label>
+
+      
+             
+              
+            </div>
 
             {/* Bio Section */}
             <div>

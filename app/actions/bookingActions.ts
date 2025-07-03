@@ -382,7 +382,8 @@ export async function acknowledgeRescheduleRequest(bookingId: string): Promise<A
                 select: { 
                    status: true, 
                    teacherUserId: true, 
-                   studentUserId: true, 
+                   studentUserId: true,
+                   calculatedPrice: true,
                    subject: { 
                     select: { name: true } }, 
                     level: true
@@ -398,6 +399,18 @@ export async function acknowledgeRescheduleRequest(bookingId: string): Promise<A
                 where: { id: bookingId },
                 data: { status: 'CANCELLED' }
             });
+
+            // --- NEW: Add booking price to student's credit balance ---
+            if (booking.calculatedPrice && booking.calculatedPrice.gt(0)) {
+                await tx.user.update({
+                    where: { id: booking.studentUserId },
+                    data: {
+                        creditBalance: {
+                            increment: booking.calculatedPrice // Atomically increment balance
+                        }
+                    }
+                });
+            }
 
             // --- NEW: Update Notification Logic ---
             const teacherName = user.user_metadata?.full_name || 'The teacher';

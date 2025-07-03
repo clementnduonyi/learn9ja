@@ -140,7 +140,7 @@ export default function SignUpForm() {
             {message && <p className="text-sm text-green-600 bg-green-50 dark:bg-green-900/20 p-3 rounded-md">{message}</p>}
 
             <div>
-                <Button type="submit" disabled={isPending} className="w-full flex justify-center py-3">
+                <Button type="submit" disabled={isPending} variant="outline" className="w-full flex text-learn9ja justify-center py-3">
                     {isPending ? 'Creating Account...' : 'Sign Up'}
                 </Button>
             </div>

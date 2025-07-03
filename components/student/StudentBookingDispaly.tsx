@@ -92,7 +92,7 @@ export default function StudentBookingsDisplay({ bookings }: StudentBookingsDisp
        {/* Reschedule Requested */}
       {groupedBookings.RESCHEDULE_REQUESTED.length > 0 && (
         <section>
-          <h3 className="text-xl font-semibold mb-3 text-blue-700">Reschedule Requested</h3>
+          <h3 className="text-xl font-semibold mb-3 text-yellow-900">Reschedule Requested</h3>
           <div className="space-y-4">
             {groupedBookings.RESCHEDULE_REQUESTED.map(booking => (
               <StudentBookingCard key={booking.id} booking={booking} />
@@ -104,7 +104,7 @@ export default function StudentBookingsDisplay({ bookings }: StudentBookingsDisp
       {/* Upcoming/Accepted Sessions */}
       {groupedBookings.UPCOMING_ACCEPTED.length > 0 && (
         <section>
-          <h3 className="text-xl font-semibold mb-3 text-indigo-700">Upcoming & Scheduled Sessions</h3>
+          <h3 className="text-xl font-semibold mb-3 text-yellow-900">Upcoming & Scheduled Sessions</h3>
           <div className="space-y-4">
             {groupedBookings.UPCOMING_ACCEPTED.map(booking => (
               <StudentBookingCard key={booking.id} booking={booking} />
@@ -116,7 +116,7 @@ export default function StudentBookingsDisplay({ bookings }: StudentBookingsDisp
        {/* NEW: Past Accepted Sessions (Awaiting Completion/Review) */}
        {groupedBookings.PAST_ACCEPTED.length > 0 && (
         <section>
-          <h3 className="text-xl font-semibold mb-3 text-purple-700">Past Sessions (Awaiting Completion)</h3>
+          <h3 className="text-xl font-semibold mb-3 text-yellow-900">Past Sessions (Awaiting Completion)</h3>
           <div className="space-y-4">
             {groupedBookings.PAST_ACCEPTED.map(booking => (
               // StudentBookingCard will show different buttons based on ACCEPTED status
@@ -131,7 +131,7 @@ export default function StudentBookingsDisplay({ bookings }: StudentBookingsDisp
       {/* Completed Sessions */}
       {groupedBookings.COMPLETED.length > 0 && (
         <section>
-          <h3 className="text-xl font-semibold mb-3 text-green-700">Completed Sessions</h3>
+          <h3 className="text-xl font-semibold mb-3 text-learn9ja">Completed Sessions</h3>
           <div className="space-y-4">
             {groupedBookings.COMPLETED.map(booking => (
               <StudentBookingCard key={booking.id} booking={booking} /> // Card shows "Leave Review" here

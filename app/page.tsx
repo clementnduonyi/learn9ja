@@ -14,7 +14,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="">
+      
         <HeroSection />
         
         <FeaturesSection />
@@ -55,7 +55,7 @@ export default async function HomePage() {
          <BenefitsSection />
         
         <CTASection />
-      </main>
+     
     </div>
 
 

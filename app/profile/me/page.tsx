@@ -85,21 +85,21 @@ export default async function ProfilePage() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 md:p-8">
+            <div className="bg-white shadow-md rounded-lg p-6 md:p-8">
                 {/* --- User Info Section --- */}
                 <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 mb-6">
                     <Image
                         src={displayAvatar || '/avatars/default-other.svg'}
                         alt={userProfile.name || 'User Avatar'}
                         width={120} height={120}
-                        className="rounded-full border-4 border-indigo-200 dark:border-indigo-700 bg-gray-200 object-cover"
+                        className="rounded-full border-4 border-learn9ja bg-gray-200 object-cover"
                         // onError={(e) => { e.currentTarget.src = '/avatars/default-other.svg'; }}
                         priority
                     />
                     <div className="flex-grow text-center md:text-left">
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{userProfile.name || 'User'}</h1>
                         <p className="text-gray-600 dark:text-gray-400">{userProfile.email}</p>
-                        <p className="text-sm text-indigo-600 dark:text-indigo-400 font-medium capitalize">{userProfile.role?.toLowerCase()}</p>
+                        <p className="text-sm text-learn9ja font-medium capitalize">{userProfile.role?.toLowerCase()}</p>
                         <p className="text-sm text-gray-500 dark:text-gray-500">Member since: {format(new Date(userProfile.createdAt), 'PPP')}</p>
                         {age !== null && <p className="text-sm text-gray-500 dark:text-gray-500">Age: {age}</p>}
                         {userProfile.phone && <p className="text-sm text-gray-500 dark:text-gray-500">Phone: {userProfile.phone}</p>}

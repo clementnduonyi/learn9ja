@@ -128,7 +128,7 @@ export default async function TeacherBookingDetailPage( { params, }: Props) {
     // --- Render ---
     return (
         // Uses DashboardLayout
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 pt-16">
             <h1 className="text-3xl font-bold mb-6">Booking/Request Details</h1>
 
             {fetchError ? (

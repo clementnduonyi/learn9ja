@@ -73,18 +73,18 @@ export default function LoginForm() {
 
                 <div className="flex items-center justify-end">
                     <div className="text-sm">
-                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500 dark:hover:text-indigo-400">
+                        <a href="#" className="font-medium text-learn9ja/50 hover:text-learn9ja/60 ">
                             Forgot your password?
                         </a>
                     </div>
                 </div>
 
-                {(error || urlError) && <p className="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">{error || urlError}</p>}
-                {urlMessage && !error && <p className="text-sm text-green-600 bg-green-50 dark:bg-green-900/20 p-3 rounded-md">{urlMessage}</p>}
+                {(error || urlError) && <p className="text-sm text-red-600 bg-red-50 p-3 rounded-md">{error || urlError}</p>}
+                {urlMessage && !error && <p className="text-sm text-green-600 bg-green-50 p-3 rounded-md">{urlMessage}</p>}
 
 
                 <div>
-                    <Button type="submit" disabled={isPending} className="w-full flex justify-center py-3">
+                    <Button type="submit" variant='outline' disabled={isPending} className="w-full flex text-learn9ja justify-center py-3">
                         {isPending ? "Signing in..." : "Sign in"}
                     </Button>
                 </div>
@@ -93,10 +93,10 @@ export default function LoginForm() {
             <div className="mt-6">
                 <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+                        <div className="w-full border-t border-gray-300" />
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">Or continue with</span>
+                        <span className="bg-white px-2 text-gray-500">Or continue with</span>
                     </div>
                 </div>
 

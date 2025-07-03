@@ -61,7 +61,7 @@ export default function PaymentSettingsForm({ role, initialPaymentData }: Paymen
                  <p className="text-sm text-gray-600 mb-4">Manage your payment method for booking sessions.</p>
                  {/* TODO: Implement Stripe Elements or similar here */}
                  <div className="p-4 border rounded bg-gray-50 text-center text-gray-500">
-                     Student Payment Method Integration (e.g., Stripe) Placeholder
+                     Student Payment Method Integration <em>coming soon!</em>
                  </div>
                  {/* Display stored info if available, e.g., last 4 digits */}
                  {initialPaymentData && <p>Current Method: **** **** **** {initialPaymentData.toString()}</p>}

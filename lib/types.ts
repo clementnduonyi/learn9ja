@@ -1,5 +1,5 @@
 import type { Subject, User, Role } from '@prisma/client'; // Import Role enum
-import {Prisma, Booking } from '@prisma/client';
+import {Prisma, Booking, Gender } from '@prisma/client';
 import type { JsonValue } from '@prisma/client/runtime/library';
 import type { TeacherProfile, TeacherSubject } from '@prisma/client';
 
@@ -278,5 +278,15 @@ export const teacherProfileEditArgs = Prisma.validator<Prisma.TeacherProfileDefa
 // Define the type based on the validator for the initialProfile prop
 // Note: This type is TeacherProfile & { subjectsTaught: ... }
 export type TeacherProfileForEdit = Prisma.TeacherProfileGetPayload<typeof teacherProfileEditArgs>;
+
+export interface LayoutUserData {
+    id: string;
+    name: string | null;
+    role: Role | null;
+    avatarUrl: string | null;
+    gender: Gender | null;
+    email: string | undefined;
+    unreadNotificationCount: number;
+}
 
 

@@ -6,6 +6,9 @@ import prisma from '@/lib/prisma';
 import { Prisma } from '@prisma/client'; // Import Prisma namespace and enums
 import StudentBookingsDisplay from '@/components/student/StudentBookingDispaly'; 
 import { StudentBookingWithDetails } from '@/lib/types'
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
+
 
 
 // src/app/student/bookings/page.tsx
@@ -67,34 +70,34 @@ export default async function StudentDashboardPage() {
         fetchError = "Could not load your bookings. Please try again later.";
     }
 
-    return (
-        <div className="container mx-auto px-4 py-8 space-y-12">
-            <h1 className="text-3xl font-bold mb-6">Student Dashboard</h1>
 
-            {/* Section 1: Link to Find Teacher Page */}
-            <section aria-labelledby="find-teacher-heading">
-                <h2 id="find-teacher-heading" className="text-2xl font-semibold mb-4 border-b pb-2">Find Help</h2>
-                <div className="bg-white p-6 rounded-lg shadow-sm border">
-                     <p className="text-gray-700 mb-4">Ready for your next session? Find available teachers based on subject, level, and your preferred time.</p>
-                     {/* Styled Link acting like a button */}
-                     <Link
-                        href="/find-teachers" // <<< Ensure this route exists or adjust as needed
-                        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150 ease-in-out"
-                     >
-                         {/* Optional: Add an icon here if you have an icon library */}
-                         {/* <SearchIcon className="mr-2 h-5 w-5" /> */}
-                         Find a Teacher Now
-                     </Link>
-                </div>
-            </section>
+     return (
+        <div className="space-y-8 lg:pt-16">
+            <header>
+                 <h1 className="text-3xl font-bold text-gray-900">Welcome, {user.user_metadata?.full_name || 'Student'}!</h1>
+                <p className="text-gray-500 mt-1">Ready to learn something new today?</p>
+            </header>
 
-            {/* Section 2: My Bookings */}
-            <section id="my-bookings" aria-labelledby="my-bookings-heading">
-                <h2 id="my-bookings-heading" className="text-2xl font-semibold mb-4 border-b pb-2">My Sessions</h2>
+            {/* Call to Action Card */}
+            <div className="bg-learn9ja rounded-xl shadow-lg p-8 text-white">
+                <h2 className="text-2xl font-bold">Find Your Perfect Teacher</h2>
+                <p className="mt-2 opacity-90 max-w-xl">
+                    Search for expert teachers by subject, level, and your preferred time. Get one-on-one help instantly or schedule a session for later.
+                </p>
+                <Button asChild size="lg" className="mt-6 bg-white text-learn9ja hover:bg-white/90 font-bold">
+                    <Link href="/find-teachers">
+                        Find a Teacher Now
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                </Button>
+            </div>
+
+            {/* My Sessions Section */}
+            <section id="my-sessions" className="rounded-xl border bg-white p-6 shadow-sm">
+                <h2 className="text-xl font-semibold mb-4">My Sessions</h2>
                 {fetchError ? (
                     <div className="p-4 text-red-500 bg-red-50 rounded-md">{fetchError}</div>
                 ) : (
-                    // Pass ALL bookings to the display component which will group them
                     <StudentBookingsDisplay bookings={allBookings} />
                 )}
             </section>

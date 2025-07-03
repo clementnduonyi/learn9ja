@@ -82,7 +82,7 @@ const handleScheduledPayment = () => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden card-hover">
        <div className="relative">
           {teacher.isAvailableNow && (
-            <div className="absolute top-3 right-3 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+            <div className="absolute top-3 right-3 bg-learn9ja/50 text-white text-xs px-2 py-1 rounded-full">
               Available Now
             </div>
             

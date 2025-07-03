@@ -1,13 +1,11 @@
-
 import Link from 'next/link';
 import { Twitter, Instagram, Facebook } from 'lucide-react';
 
-const Footer = ({ className = '' }: { className?: string }) => {
+const Footer = () => {
   const currentYear = new Date().getFullYear();
-  // console.log("Footer user data:", user);
 
   return (
-    <footer className={`mt-auto bg-white pt-8 ${className}`}>
+    <footer className="mt-auto bg-white pt-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Brand and Description */}
@@ -41,7 +39,7 @@ const Footer = ({ className = '' }: { className?: string }) => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-8 flex flex-col items-center justify-between border-t border-learn9ja pt-6 sm:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-between border-t pt-6 sm:flex-row">
           <p className="text-sm text-gray-500">
             &copy; {currentYear} Learn9ja. All rights reserved.
           </p>
@@ -63,4 +61,3 @@ const Footer = ({ className = '' }: { className?: string }) => {
 };
 
 export default Footer;
-

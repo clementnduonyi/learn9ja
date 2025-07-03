@@ -1,6 +1,6 @@
 // src/app/profile/teacher/edit/page.tsx
 
-import { redirect } from 'next/navigation';
+/*import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import prisma from '@/lib/prisma';
 import { Prisma, Role, Subject } from '@prisma/client'; // Import Role
@@ -100,5 +100,89 @@ export default async function EditTeacherProfilePage() {
             )}
         </div>
     );
+}*/
+
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import prisma from '@/lib/prisma';
+import { Prisma, Role, Subject } from '@prisma/client';
+import TeacherProfileForm from '@/components/profile/TeacherProfileForm';
+
+// Prisma validator for fetching teacher profile with subjectsTaught
+const teacherProfileEditArgs = Prisma.validator<Prisma.TeacherProfileDefaultArgs>()({
+  include: {
+    subjectsTaught: {
+      select: {
+        subjectId: true,
+        levels: true,
+      },
+    },
+  },
+});
+type TeacherProfileForEdit = Prisma.TeacherProfileGetPayload<typeof teacherProfileEditArgs>;
+
+export const metadata = {
+  title: 'Edit Teacher Profile',
+};
+
+export default async function EditTeacherProfilePage() {
+  const supabase = await createClient();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+  // --- 1. Authentication & Authorization ---
+  if (userError || !user || !user.id) {
+    redirect('/login?message=Please login to edit your profile');
+  }
+
+  // Verify user is a TEACHER by checking the User table
+  const userRoleProfile = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { role: true },
+  });
+  if (!userRoleProfile || userRoleProfile.role !== Role.TEACHER) {
+    console.warn(`User ${user.id} attempting to access teacher edit page is not a TEACHER.`);
+    redirect('/dashboard/student?error=Unauthorized');
+  }
+
+  // --- 2. Data Fetching ---
+  let teacherProfileData: TeacherProfileForEdit | null = null;
+  let allSubjects: Subject[] = [];
+  let fetchError: string | null = null;
+
+  try {
+    [teacherProfileData, allSubjects] = await Promise.all([
+      prisma.teacherProfile.findUnique({
+        where: { userId: user.id },
+        ...teacherProfileEditArgs,
+      }),
+      prisma.subject.findMany({
+        orderBy: { name: 'asc' },
+      }),
+    ]);
+
+    if (!teacherProfileData) {
+      // Optionally log or handle missing profile
+      console.warn(`Teacher profile not found for user ${user.id}, allowing form render for potential creation.`);
+    }
+  } catch (error) {
+    console.error("Error fetching data for teacher profile edit:", error);
+    fetchError = "Could not load profile data or subjects.";
+  }
+
+  // --- 3. Render Page ---
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Edit Teacher Profile</h1>
+      {fetchError ? (
+        <div className="p-4 text-red-500 bg-red-50 rounded-md">{fetchError}</div>
+      ) : (
+        <TeacherProfileForm
+          userId={user.id}
+          initialProfile={teacherProfileData}
+          allSubjects={allSubjects}
+        />
+      )}
+    </div>
+  );
 }
 

@@ -100,7 +100,7 @@ export default function StudentSearchForm({ subjects }: StudentSearchFormProps) 
                  
                 {/* Submit Button */}
                 <div className="lg:col-span-1 flex items-end">
-                    <Button type="submit" disabled={isPending} className="w-full py-2.5">
+                    <Button type="submit" disabled={isPending} className="w-full border border-learn9ja py-2.5">
                         {isPending ? 'Searching...' : 'Find Teachers'}
                     </Button>
                 </div>

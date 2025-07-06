@@ -13,6 +13,7 @@ interface ActionResult {
 
 /**
  * Creates a secure, signed URL for uploading a user avatar to Supabase Storage.
+ * This action does NOT handle the file upload itself.
  * @param fileType The MIME type of the file (e.g., 'image/png').
  * @param fileSize The size of the file in bytes.
  * @returns An object with the signed URL and file path, or an error.
@@ -39,7 +40,7 @@ export async function getAvatarUploadUrl(fileType: string, fileSize: number): Pr
     try {
         const fileExtension = fileType.split('/')[1];
         // Create a unique path for the file to prevent overwrites and caching issues
-        const filePath = `avatars/${user.id}/${uuidv4()}.${fileExtension}`;
+        const filePath = `${user.id}/${uuidv4()}.${fileExtension}`;
 
         // Generate the signed URL for upload. This is valid for a short time (e.g., 60 seconds).
         const { data, error } = await supabase.storage
@@ -51,6 +52,7 @@ export async function getAvatarUploadUrl(fileType: string, fileSize: number): Pr
             throw new Error("Could not create a secure upload URL.");
         }
 
+        console.log(`[getAvatarUploadUrl] Generated signed URL for path: ${data.path}`);
         return { success: true, uploadUrl: data.signedUrl, filePath: data.path };
 
     } catch (error: unknown) {

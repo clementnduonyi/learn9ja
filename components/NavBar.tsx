@@ -57,7 +57,12 @@ export default function Navbar({ user, className = '' }: { user: LayoutUserData 
                                       }
                                     </Link>
                                 <Link href="/profile/me">
-                                    <Image src={displayAvatar} alt="User Avatar" width={32} height={32} className="rounded-full" />
+                                    <Image src={displayAvatar} 
+                                        alt="User Avatar" 
+                                        width={100} 
+                                        height={100} 
+                                       className="w-8 h-8 rounded-full object-cover border-2 border-learn9ja"
+                                    />
                                 </Link>
                                  <LogoutButton />
                             </>

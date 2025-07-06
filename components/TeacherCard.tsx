@@ -94,8 +94,8 @@ const handleScheduledPayment = () => {
           <Image
             src={displayAvatar}
             alt={`${teacher.name}'s profile`}
-            width={64} height={64}
-            className="w-16 h-16 rounded-full object-cover border-2 border-learn9ja"
+            width={100} height={100}
+            className="w-24 h-24 rounded-full object-cover border-2 border-learn9ja"
             onError={(e) => { e.currentTarget.src = '/avatars/default-other.svg'; }}
           />
           <div>

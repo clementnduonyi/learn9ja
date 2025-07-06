@@ -50,7 +50,7 @@ export default function DashboardSidebar({ user, isOpen, onClose }: DashboardSid
             <div className={cn("fixed inset-0 bg-black/60 z-30 lg:hidden", isOpen ? "block" : "hidden")} onClick={onClose} />
 
             <aside className={cn(
-                "fixed top-10 left-0 h-full w-64 bg-white p-4 flex flex-col  z-40 transition-transform duration-300 ease-in-out lg:translate-x-0",
+                "fixed top-14 left-0 h-full w-64 bg-white p-4 flex flex-col  z-40 transition-transform duration-300 ease-in-out lg:translate-x-0",
                 isOpen ? "translate-x-0" : "-translate-x-full"
             )}>
                 <div className="flex items-center justify-between mb-4">
@@ -62,7 +62,12 @@ export default function DashboardSidebar({ user, isOpen, onClose }: DashboardSid
                 </div>
 
                 <div className="flex flex-col items-center mb-6 border-b pb-4">
-                    <Image src={displayAvatar} alt={user.name || 'User Avatar'} width={80} height={80} className="rounded-full mb-2 border-2 border-learn9ja bg-gray-200" />
+                    <Image 
+                        src={displayAvatar} 
+                        alt={user.name || 'User Avatar'} 
+                        width={100} height={100}
+                        className="w-20 h-20 rounded-full object-cover border-2 border-learn9ja"
+                     />
                     <h3 className="font-semibold text-lg text-center text-gray-800">{user.name || 'User'}</h3>
                     <p className="text-sm text-gray-500">{user.email}</p>
                     <span className="mt-2 text-xs font-medium bg-learn9ja/10 text-learn9ja px-2 py-0.5 rounded-full capitalize">

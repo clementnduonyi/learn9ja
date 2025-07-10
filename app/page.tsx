@@ -17,7 +17,8 @@ export default async function HomePage() {
       
         <HeroSection />
         
-        <FeaturesSection />
+        
+        <BenefitsSection />
         
         <section className="py-16 bg-learn9ja-gray">
           <div className="container mx-auto px-4">
@@ -52,7 +53,7 @@ export default async function HomePage() {
           {/*</div>*/}
         </section>
 
-         <BenefitsSection />
+        <FeaturesSection />
         
         <CTASection />
      

@@ -1,5 +1,5 @@
 
-import { Clock, CreditCard, MessageSquare, UserCheck, Video } from "lucide-react";
+import { Clock, CreditCard, MessageSquare, UserCheck, Video, Repeat } from "lucide-react";
 
 const features = [
   {
@@ -28,7 +28,7 @@ const features = [
     description: "We partner Paystack payment for seamless and secure payment processing."
   },
   {
-    icon: <CreditCard className="h-8 w-8 text-learn9ja" />,
+    icon: <Repeat className="h-8 w-8 text-learn9ja" />,
     title: "Session Replays",
     description: "Review your live sessions with a replay available for up to 1 hour post-session."
   }

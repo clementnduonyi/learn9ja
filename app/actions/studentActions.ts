@@ -9,7 +9,7 @@ import { TeacherStatus } from '@prisma/client';
 import { z, ZodError } from 'zod';
 // Import the EXACT types needed for the card from the shared types file
 import { teacherCardArgs, type TeacherForCard } from '@/lib/types';
-import { isTeacherAvailable } from '@/lib/scheduling';
+import { isTeacherAvailableForScheduled } from '@/lib/scheduling';
 
 // --- Types ---
 export interface SearchCriteria {
@@ -138,11 +138,19 @@ export async function findAvailableTeachers(
             return { success: true, data: [], message: "No teachers found matching your core criteria." };
         }
 
-        // 3. Filter by Time Availability
-        console.log(`\nStep 3: Filtering by Time Availability...`);
-        const availableByTimeTeachers = potentialTeachers.filter(teacher =>
-            teacher.teacherProfile && isTeacherAvailable(teacher.teacherProfile.availability, preferredTimeUTC, durationMinutes ?? 60)
-        );
+        // 3. Filter by Time Availability (Scheduled)
+        console.log(`\nStep 3: Filtering by Time Availability for ${preferredTimeUTC.toISOString()}...`);
+
+        const availableByTimeTeachers = potentialTeachers.filter(teacher => {
+            // It calls the correct function for scheduled checks here!
+            return isTeacherAvailableForScheduled(
+                teacher?.teacherProfile?.availability,
+                preferredTimeUTC, // The specific future time from the student
+                durationMinutes
+            );
+        });
+
+        
         console.log(`Step 3 Found ${availableByTimeTeachers.length} teachers available at the requested time.`);
 
         if (availableByTimeTeachers.length === 0) {

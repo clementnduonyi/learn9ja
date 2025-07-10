@@ -8,7 +8,8 @@ import { Prisma, Role, SubscriptionTier, TeacherStatus } from '@prisma/client'; 
 import type { JsonValue } from '@prisma/client/runtime/library';
 import { teacherCardArgs, type TeacherForCard } from "@/lib/types"; // Import from shared types file
 import { z, ZodError } from 'zod'; // Import Zod
-import { isTeacherAvailable } from "@/lib/scheduling";
+import { isTeacherAvailableNow } from "@/lib/scheduling";
+import { toZonedTime, format } from 'date-fns-tz';
 
 // --- ActionResult Interface ---
 interface ActionResult {
@@ -59,6 +60,50 @@ export async function updateTeacherProfile(data: TeacherProfileUpdateData): Prom
 
     try {
         const validatedData = teacherProfileUpdateSchema.parse(data);
+        // --- TIMEZONE CONVERSION LOGIC ---
+        // 1. Fetch the teacher's saved timezone from the User model
+        const userProfile = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { timezone: true, role: true },
+        });
+
+        if (!userProfile || userProfile.role !== Role.TEACHER) {
+            return { success: false, error: 'Forbidden: Not a teacher.' };
+        }
+        if (!userProfile.timezone) {
+            return { success: false, error: "Please set your timezone in your account settings before saving availability." };
+        }
+        const teacherTimezone = userProfile.timezone;
+
+        // 2. Convert availability slots from teacher's local time to UTC
+        const availabilityInUTC: Record<string, string[]> = {};
+        
+        if (validatedData.availability) {
+            const localAvailability = validatedData.availability as Record<string, string[]>;
+            const dummyDate = '2000-01-10'; // A consistent date for conversion
+
+            for (const day in localAvailability) {
+                availabilityInUTC[day] = localAvailability[day].map(slot => {
+                    try {
+                        const [start, end] = slot.split('-');
+                        if (!start || !end) return null;
+
+                        // Parse the local time in the teacher's timezone and convert to UTC
+                       const zonedStart = toZonedTime(`${dummyDate}T${start}:00`, teacherTimezone);
+                       const zonedEnd = toZonedTime(`${dummyDate}T${end}:00`, teacherTimezone);
+
+                        // Format them back to HH:mm strings, now in the UTC timezone
+                        // Step B: Format those date objects into a "HH:mm" string, but for the UTC timezone.
+                        const utcStart = format(zonedStart, 'HH:mm', { timeZone: 'UTC' });
+                        const utcEnd = format(zonedEnd, 'HH:mm', { timeZone: 'UTC' });
+                        return `${utcStart}-${utcEnd}`;
+                    } catch (e) {
+                        console.error(`Could not convert slot "${slot}" for day "${day}"`, e);
+                        return null;
+                    }
+                }).filter(Boolean) as string[];
+              }
+            }
         // Explicitly type submittedSubjects based on validation result
         const submittedSubjects: TeacherSubjectLevelInput[] = validatedData.subjects ?? [];
         const submittedSubjectIds = submittedSubjects.map((s: TeacherSubjectLevelInput) => s.subjectId); // <<< Added type for s
@@ -73,7 +118,7 @@ export async function updateTeacherProfile(data: TeacherProfileUpdateData): Prom
                 where: { userId: userId },
                 data: {
                     bio: validatedData.bio,
-                    availability: validatedData.availability,
+                    availability: availabilityInUTC,
                     pricePerHour: priceValue,
                     specializations: validatedData.specializations,
                     acceptingInstantSessions: validatedData.acceptingInstantSessions, 
@@ -191,24 +236,10 @@ export async function getFeaturedTeachers(): Promise<TeacherForCard[]> {
           include: { subject: { select: { name: true } } },
         });
 
-       
-        
-        // --- CORRECTED: Real-time Availability Logic ---
-        let isAvailableNow = false;
-        // Check all three conditions explicitly
-        if (
-            teacher.subscriptionTier !== SubscriptionTier.BASIC &&
-            teacher.teacherProfile?.acceptingInstantSessions === true &&
-            teacher.teacherProfile?.availability
-        ) {
-          // Use the centralized helper to check if the current UTC time falls within any slot
-          isAvailableNow = isTeacherAvailable(
-            teacher.teacherProfile.availability,
-            new Date(), // Current time in UTC
-            60 // Assuming a default 60-min instant session
-          );
-        }
-        // --- END CORRECTION ---
+        // --- Use the new, correct logic for instant availability ---
+        const isAvailableNow =
+            teacher.subscriptionTier !== SubscriptionTier.BASIC && teacher.teacherProfile?.acceptingInstantSessions === true &&
+            isTeacherAvailableNow(teacher.teacherProfile.availability); // <<< Use the new helper
 
         return {
           ...teacher,

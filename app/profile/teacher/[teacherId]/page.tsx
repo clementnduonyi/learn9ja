@@ -192,7 +192,7 @@ import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import { TeacherStatus } from '@prisma/client';
 import { getTeacherSubjects } from '@/app/actions/teacherActions';
-import { isTeacherAvailable } from '@/lib/scheduling';
+import { isTeacherAvailableNow } from '@/lib/scheduling';
 import StarRating from '@/components/StarRating';
 import Image from 'next/image';
 import TeacherProfileActions from '@/components/teacher/TeacherProfile';
@@ -235,7 +235,7 @@ export default async function TeacherPublicProfilePage({ params }:  { params: Pr
 
         const isAvailableNow =
             teacherData.teacherProfile.acceptingInstantSessions === true &&
-            isTeacherAvailable(teacherData.teacherProfile.availability, new Date(), 60);
+            isTeacherAvailableNow(teacherData.teacherProfile.availability);
 
             
 

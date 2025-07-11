@@ -1,6 +1,7 @@
 // src/app/actions/userActions.ts
 'use server';
 
+import prisma from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
 import { v4 as uuidv4 } from 'uuid'; // For generating unique file names
 
@@ -60,3 +61,28 @@ export async function getAvatarUploadUrl(fileType: string, fileSize: number): Pr
         return { success: false, error: message };
     }
 }
+
+
+
+
+// This action is simple and secure. It updates the last_seen_at timestamp
+// for the currently authenticated user.
+export async function updateUserActivity() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (user) {
+    try {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { last_seen_at: new Date() },
+      });
+      return { success: true };
+    } catch (error) {
+      console.error("Failed to update user activity:", error);
+      return { success: false };
+    }
+  }
+  return { success: false };
+}
+

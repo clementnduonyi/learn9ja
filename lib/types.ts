@@ -224,6 +224,7 @@ export const teacherCardArgs = Prisma.validator<Prisma.UserDefaultArgs>()({
     gender: true,
     location: true,
     subscriptionTier: true, // <<< Crucial for button logic
+    last_seen_at: true, // Optional, for real-time presence
     reviewsReceived: { // <<< Fetch reviews written FOR this user
       select: {
           rating: true,

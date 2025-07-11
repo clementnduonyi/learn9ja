@@ -79,7 +79,8 @@ const handleScheduledPayment = () => {
     }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden card-hover">
+    <>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden card-hover">
        <div className="relative">
           {teacher.isAvailableNow && (
             <div className="absolute top-3 right-3 bg-learn9ja/50 text-white text-xs px-2 py-1 rounded-full">
@@ -174,14 +175,16 @@ const handleScheduledPayment = () => {
             </div>
         </div>
       </div>
-      {/* --- Render the Modal for Instant Booking --- */}
-      {variant === 'display' && (
-          <InstantBookingModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-              teacher={ teacher }
-          />
-      )}
-    </div>
+      
+      </div>
+            {/* --- Render the Modal for Instant Booking --- */}
+        {variant === 'display' && (
+            <InstantBookingModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                teacher={ teacher }
+            />
+        )}
+    </>
   );
 };

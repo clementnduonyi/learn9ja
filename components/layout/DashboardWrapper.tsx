@@ -7,6 +7,8 @@ import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import MobileHeader from '@/components/layout/MobileHeader';
 import type { LayoutUserData } from '@/lib/types'; // Assuming shared types file
 import DashboardFooter from '@/components/layout/DashboardFooter';
+import { updateUserActivity } from '@/app/actions/userActions'; // Import the new action
+
 
 interface DashboardWrapperProps {
   children: React.ReactNode;
@@ -21,6 +23,26 @@ export default function DashboardWrapper({ user, children }: DashboardWrapperPro
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [pathname]);
+
+
+  // --- NEW: Periodically update user activity for teachers ---
+  useEffect(() => {
+    // Only run this logic if the logged-in user is a teacher
+    if (user?.role === 'TEACHER') {
+      // Update immediately on load
+      updateUserActivity();
+
+      // Then, update every 3 minutes
+      const interval = setInterval(() => {
+        console.log("Updating teacher activity timestamp...");
+        updateUserActivity();
+      }, 3 * 60 * 1000); // 180000 milliseconds
+
+      // Clean up the interval when the component unmounts
+      return () => clearInterval(interval);
+    }
+  }, [user?.role]); // Rerun if the user object changes
+
 
   return (
     // The root container for the entire dashboard view

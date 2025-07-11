@@ -68,6 +68,7 @@ model User {
   languages     String[]  @default([])
   location      String?
   subscriptionTier SubscriptionTier @default(BASIC)
+  last_seen_at  DateTime? // <<< NEW: Tracks user activity
   timezone      String?   // <<< NEW: User's IANA timezone name (e.g., "Africa/Lagos")
 
   createdAt     DateTime  @default(now()) @map("created_at")

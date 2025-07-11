@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import HeroSection from "@/components/HeroSection"
 // import HowItWorksSection from "@/ui/home/HowItWorksSection";
 import FeaturesSection from "@/components/FeaturesSection";
@@ -46,9 +47,9 @@ export default async function HomePage() {
             </div>
             
             <div className="mt-10 mx-auto text-center w-50">
-              <a href="/signup" className="btn-primary inline-flex px-8">
+              <Link href="/find-teachers" className="btn-primary inline-flex px-8">
                 View All Teachers
-              </a>
+              </Link>
             </div>
           {/*</div>*/}
         </section>

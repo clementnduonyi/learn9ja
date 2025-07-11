@@ -41,13 +41,13 @@
       }
 
       return (
-        <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
+        <ul role="list" className="divide-y divide-gray-200">
           {initialNotifications.map((notification) => (
             <li
               key={notification.id}
               className={cn(
                   "p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors",
-                  !notification.isRead ? 'bg-indigo-50 dark:bg-indigo-900/30 font-medium' : 'bg-white dark:bg-gray-800/50' // Highlight unread
+                  !notification.isRead ? 'bg-indigo-50 font-medium' : 'bg-white' // Highlight unread
               )}
             >
               <div className="flex space-x-3">
@@ -61,7 +61,7 @@
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className={cn(
-                      "text-sm text-gray-800 dark:text-gray-200",
+                      "text-sm text-gray-800",
                       !notification.isRead ? 'font-semibold' : ''
                   )}>
                     {/* Make message clickable if link exists */}
@@ -73,7 +73,7 @@
                       <span>{notification.message}</span>
                     )}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     <time dateTime={new Date(notification.createdAt).toISOString()}>
                       {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
                     </time>

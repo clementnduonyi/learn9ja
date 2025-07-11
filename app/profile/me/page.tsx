@@ -97,14 +97,14 @@ export default async function ProfilePage() {
                         priority
                     />
                     <div className="flex-grow text-center md:text-left">
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{userProfile.name || 'User'}</h1>
+                        <h1 className="text-3xl font-bold text-gray-900">{userProfile.name || 'User'}</h1>
                         <p className="text-gray-600 dark:text-gray-400">{userProfile.email}</p>
                         <p className="text-sm text-learn9ja font-medium capitalize">{userProfile.role?.toLowerCase()}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-500">Member since: {format(new Date(userProfile.createdAt), 'PPP')}</p>
-                        {age !== null && <p className="text-sm text-gray-500 dark:text-gray-500">Age: {age}</p>}
-                        {userProfile.phone && <p className="text-sm text-gray-500 dark:text-gray-500">Phone: {userProfile.phone}</p>}
-                        {userProfile.gender && <p className="text-sm text-gray-500 dark:text-gray-500 capitalize">Gender: {userProfile.gender.toLowerCase()}</p>}
-                        {displayAddress && <p className="text-sm text-gray-500 dark:text-gray-500">Address: {displayAddress}</p>}
+                        <p className="text-sm text-gray-500">Member since: {format(new Date(userProfile.createdAt), 'PPP')}</p>
+                        {age !== null && <p className="text-sm text-gray-500">Age: {age}</p>}
+                        {userProfile.phone && <p className="text-sm text-gray-500">Phone: {userProfile.phone}</p>}
+                        {userProfile.gender && <p className="text-sm text-gray-500 capitalize">Gender: {userProfile.gender.toLowerCase()}</p>}
+                        {displayAddress && <p className="text-sm text-gray-500">Address: {displayAddress}</p>}
                         <Link href="/settings" className="mt-4 inline-block">
                             <Button size="sm" variant="outline">Edit Profile & Settings</Button>
                         </Link>

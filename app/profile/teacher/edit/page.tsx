@@ -171,7 +171,7 @@ export default async function EditTeacherProfilePage() {
 
   // --- 3. Render Page ---
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-16">
       <h1 className="text-3xl font-bold mb-6">Edit Teacher Profile</h1>
       {fetchError ? (
         <div className="p-4 text-red-500 bg-red-50 rounded-md">{fetchError}</div>

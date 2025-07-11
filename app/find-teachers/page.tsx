@@ -28,8 +28,8 @@ export default async function FindTeachersPage() {
     
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">
+        <div className="container mx-auto px-4 py-16">
+            <h1 className="text-2xl text-center text-learn9ja font-bold mb-6 animate-pulse">
                 Find Homework Help, Teacher for any Subject or Skill of your Interest
             </h1>
             <StudentSearchForm subjects={subjects} />

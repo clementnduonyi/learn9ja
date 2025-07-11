@@ -42,7 +42,7 @@
             {fetchError ? (
                 <div className="p-4 text-red-500 bg-red-50 rounded-md">{fetchError}</div>
             ) : (
-                <div className="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-lg">
+                <div className="bg-white shadow overflow-hidden rounded-lg">
                     <NotificationList initialNotifications={notifications} />
                 </div>
             )}

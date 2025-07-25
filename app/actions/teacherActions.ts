@@ -219,6 +219,7 @@ export async function getFeaturedTeachers(): Promise<TeacherForCard[]> {
         role: 'TEACHER',
         teacherProfile: {
           status: TeacherStatus.APPROVED, // Only show approved teachers
+          acceptingInstantSessions: true,
           // You could add other filters here, e.g., high rating
           // averageRating: { gte: 4.0 }
         }
@@ -237,9 +238,13 @@ export async function getFeaturedTeachers(): Promise<TeacherForCard[]> {
         });
 
         // --- Use the new, correct logic for instant availability ---
-        const isAvailableNow =
-            teacher.subscriptionTier !== SubscriptionTier.BASIC && teacher.teacherProfile?.acceptingInstantSessions === true &&
-            isTeacherAvailableNow(teacher.teacherProfile.availability); // <<< Use the new helper
+        const isPremium = teacher.subscriptionTier !== SubscriptionTier.BASIC;
+        
+        // Check if the teacher is available based on their schedule
+        const isInScheduledSlot = isTeacherAvailableNow(teacher.teacherProfile?.availability);
+        
+        const isAvailableNow = isPremium && isInScheduledSlot;
+        // --- END ---
 
         return {
           ...teacher,
